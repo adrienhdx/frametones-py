@@ -11,18 +11,29 @@ import cv2 #pip install opencv-python
 import numpy as np
 import vicosis_utils as vcs
 import time
+import os
 
 #video_path = r"C:\Users\adrhd\Documents\GitHub\vicosis\videoplayback.mp4"
 video_path = r"C:\Users\adrhd\Videos\Captures\celeste.mp4"
+out_path = r'C:\Users\adrhd\Documents\GitHub\vicosis\images'
+
+filename = os.path.splitext(os.path.basename(video_path))[0]
 
 start = time.time()
-nb_frames = 1000
-output_height = 100
 
-output_image = vcs.single_color_image(video_path, output_height, nb_frames)
 
-cv2.imwrite(f"average_color_{nb_frames}.png", output_image)
+nb_frames = 15 # most important, 1000 frames per hour is satisfactory
 
-print(f"Done in {time.time() - start} seconds")
+
+output_height = nb_frames//10 # arbitrary but good enough
+
+output_image = vcs.average_strip(video_path, output_height, nb_frames)
+
+os.chdir(out_path)
+
+cv2.imwrite(f"{filename}_{nb_frames}_{time.time() - start:.2f}.jpg", output_image)
+# filename_nbframes_time.jpg
+
+print(f"Done in {time.time() - start:.2f} seconds")
 
 
