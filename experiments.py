@@ -8,9 +8,7 @@ import os
 import vicosis_utils as utils
 import colorsys
 
-path = r"C:\Users\adrhd\Documents\GitHub\vicosis\output_sorted.jpg"
-img = cv2.imread(path)
+path = r"C:\Users\adrhd\Videos\Captures\2001 A Space Odyssey (1968)\2001.mp4"
 
-palette = vcs.fx_strip(img, 10)
-print(palette)
+utils.downsize(path) # caution very slow
 
