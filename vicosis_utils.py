@@ -228,7 +228,7 @@ def kmeans_strip(image, color_count=7, strip_height=100):
         mt.append(  ((center[i][0], center[i][1], center[i][2]), heights[i])    )
 
     # sort mt by hue
-    mt = sorted(mt, key=lambda x: colorsys.rgb_to_hsv(x[0][0], x[0][1], x[0][2])[2])
+    mt = sorted(mt, key=lambda x: colorsys.rgb_to_hsv(x[0][0], x[0][1], x[0][2])[2], reverse=True)
 
     last_height = 0
     for i in range(K):
@@ -236,4 +236,6 @@ def kmeans_strip(image, color_count=7, strip_height=100):
         output_image[last_height:last_height+height, 0] = (mt[i][0][0], mt[i][0][1], mt[i][0][2])
         last_height+=height
 
+    output_image = cv2.flip(output_image, 0)
+    
     return output_image
