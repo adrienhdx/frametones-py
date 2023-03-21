@@ -6,15 +6,15 @@ import os
 import vicosis_utils as utils
 import time
 
-video_path = r"C:\Users\adrhd\Videos\2001_480p.mp4"
-out_path = r'C:\Users\adrhd\Documents\GitHub\vicosis\images'
+video_path = r"C:\Users\adrhd\Videos\e08_compressed.mp4"
+out_path = r'C:\Users\adrhd\Documents\GitHub\vicosis'
 
 filename = os.path.splitext(os.path.basename(video_path))[0] # get filename without extension for saving the image file
 
 start = time.time()
 
-nb_frames = 150 # 1000 frames per hour is satisfactory
-height = nb_frames // 10 # 10 frames per pixel
+nb_frames = 1000 # 1000 frames per hour is satisfactory
+height = 128 #nb_frames // 10 # 10 frames per pixel
 
 # load video as a cv2 object
 cap = cv2.VideoCapture(video_path)
@@ -26,7 +26,7 @@ output_image = np.zeros((height, nb_frames, 3), np.uint8) # height x width x 3 (
 for i in range(nb_frames):
     cap.set(cv2.CAP_PROP_POS_FRAMES, frame_step * i)                # set the frame to load
     ret, frame = cap.read()                                         # get the frame ndarray
-    output_image[:, i] = utils.fx_strip(frame, height=height)[:, 0]    # get the average color of the frame and put it in the output image
+    output_image[:, i] = utils.kmeans_strip(frame, strip_height=height)[:, 0]    # get the average color of the frame and put it in the output image
     print(f"Frame {i+1}/{nb_frames} done")
 
 os.chdir(out_path)

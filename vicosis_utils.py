@@ -153,105 +153,6 @@ def generate_random_importance(nb_colors, max):
     random_importance = random_importance*max // random_importance.sum()
     return random_importance
 
-def palette_strip_priority(image_path, no_colors=7):
-
-    # returns a 100x1 strip with the most important colors of the image
-    # the height of each color is proportional to its importance
-    # the colors are sorted from the most important to the least important
-    #TODO: image needs to be either loaded from PIL or read from disk. First one requires pillow which I don't want to use
-    # since we're already using opencv. Second one is slow af.
-    # So it's either I rewrite all the functions to use PIL or I find a way to read the image from disk without using cv2.imread, 
-    # or I tweak the extcolors library to use cv2 instead of pillow, if that's possible
-    # Since I probably will end up writing my own extcolors library, I'll just leave it like that for now
-    #TODO: make it faster (ie find optimal tolerance, compress image, etc.)
-    # Latest benchmark on celeste.webm : 1336s (22min) for 500 frames (0.37 fps) so it's a total shitshow
-    # CPU usage is moderate (35%), I guess the bottleneck is the number of iterations
-    #TODO: customize the height
-    #TODO: sort the colors by hue not by importance
-    # note : reducing the tolerance is faster, but also lessens the average importance of each color
-    # potential solution would be some kind of multiplier
-
-    colors, pixel_count = extcolors.extract_from_path(image_path, tolerance=10) # slow af but that's a start
-    importance = []
-    image_colors = []
-    for i in range(len(colors)):
-        importance.append(colors[i][1]/pixel_count)
-        image_colors.append(colors[i][0])
-
-    # get the first 7 colors (most important)
-    importance = importance[:no_colors]
-    image_colors = image_colors[:no_colors]
-    # round the importance to int
-    sum_importance = sum(importance)
-    importance = [int((i*100)/sum_importance) for i in importance]
-    
-    output_image = np.zeros((100, 1, 3), np.uint8) # height x width x 3 (BGR)
-
-    last_height = 0
-    for i in range(len(image_colors)):
-        height = importance[i]
-        output_image[last_height:last_height+height, 0:10] = (image_colors[i][2], image_colors[i][1], image_colors[i][0])
-        last_height += height
-
-    # invert top and bottom 
-    output_image = cv2.flip(output_image, 0)
-
-    return output_image
-
-def palette_strip_hue(image_path, no_colors=7):
-
-    # current average speed : (tolerance=10, colors=7) 0.15 fps
-
-
-    start = time.time()
-    colors, pixel_count = thief.get_palette(image_path) # slow af but that's a start
-
-    extraction_time = time.time()-start
-    print(f"*    Extracted colors in {extraction_time:.02f} seconds")
-
-    importance = []
-    image_colors = []
-    for i in range(len(colors)):
-        importance.append(colors[i][1]/pixel_count)
-        image_colors.append(colors[i][0])
-
-    # get the first 7 colors (most important)
-    importance = importance[:no_colors]
-    image_colors = image_colors[:no_colors]
-    # round the importance to int
-    sum_importance = sum(importance)
-    importance = [int(  (i*100) / sum_importance) for i in importance]
-
-    rgb_colors = {}
-    for i in range(len(image_colors)):
-        rgb_colors[image_colors[i]] = importance[i]
-
-    # sort colors by hue
-
-
-    rgb_colors = {k: v for k, v in sorted(rgb_colors.items(), key=lambda item: colorsys.rgb_to_hsv(*item[0]))}
-    sorted_time = time.time()-start-extraction_time
-    print(f"*    Sorted colors in {sorted_time} seconds")
-
-    output_image = np.zeros((100, 1, 3), np.uint8) # height x width x 3 (BGR)
-
-    sorted_image_colors = list(rgb_colors.keys())
-
-    last_height = 0
-    for i in range(len(rgb_colors)):
-        height = rgb_colors[sorted_image_colors[i]]
-        output_image[last_height:last_height+height, 0] = (sorted_image_colors[i][2], sorted_image_colors[i][1], sorted_image_colors[i][0])
-        last_height += height
-
-    # invert top and bottom 
-    output_image = cv2.flip(output_image, 0)
-
-    output_time = time.time()-start-extraction_time-sorted_time
-    print(f"*    Image created in {output_time} seconds")
-    print(f"*    Total processing time : {extraction_time+sorted_time+output_time:.02f} seconds ({1/(extraction_time+sorted_time+output_time):.02f} fps)")
-
-    return output_image
-
 """
 Pour ouvrir un dossier ou un fichier dans l'explorateur de fichier :
 en gros pour charger le film depuis tkinter
@@ -262,6 +163,19 @@ folder_path = filedialog.askdirectory()
 """
 
 def fx_strip(image, color_count=7, quality=1, height=100):
+    """Fast Approximate Palette Extraction
+
+    Args:
+        image (cv2 frame): frame to extract the palette from
+        color_count (int, optional): Palette size. Inaccurate. Defaults to 7.
+        quality (int, optional): Algorithm precision. Defaults to 1. Max is 32
+        height (int, optional): Strip height. Defaults to 100.
+
+    Returns:
+        ndarray: output strip
+    """
+
+
     # reshape to rgba
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
 
@@ -281,5 +195,45 @@ def fx_strip(image, color_count=7, quality=1, height=100):
 
     # invert top and bottom
     output_image = cv2.flip(output_image, 0)
+
+    return output_image
+
+def kmeans_strip(image, color_count=7, strip_height=100):
+
+    # resize to 360p for faster processing
+    #image = cv2.resize(image, (480, 360))
+
+    Z = image.reshape((-1,3))
+    # convert to np.float32
+    Z = np.float32(Z)
+    # define criteria, number of clusters(K) and apply kmeans()
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+    K = color_count
+    ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+    # Now convert back into uint8, and make original image
+    center = np.uint8(center)
+    """res = center[label.flatten()]
+    res2 = res.reshape((image.shape))"""
+
+    labels, counts = np.unique(label, return_counts=True)
+
+    total_pixels = image.shape[0] * image.shape[1]
+    heights = np.uint8(counts * strip_height / total_pixels)
+
+    # make strip
+    output_image = np.zeros((strip_height, 1, 3), np.uint8) # hauteur x largeur x 3 (BGR)
+
+    mt = []
+    for i in range(K):
+        mt.append(  ((center[i][0], center[i][1], center[i][2]), heights[i])    )
+
+    # sort mt by hue
+    mt = sorted(mt, key=lambda x: colorsys.rgb_to_hsv(x[0][0], x[0][1], x[0][2])[2])
+
+    last_height = 0
+    for i in range(K):
+        height = mt[i][1]
+        output_image[last_height:last_height+height, 0] = (mt[i][0][0], mt[i][0][1], mt[i][0][2])
+        last_height+=height
 
     return output_image
