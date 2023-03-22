@@ -1,7 +1,8 @@
 #Axelle et Albane bande de bgggggggggggggggggggggg
 
 import tkinter as tk
-from tkinter import filedialog 
+from tkinter import filedialog
+from RangeSlider.RangeSlider import RangeSliderH, RangeSliderV 
 
 class Fenetre() :
     def __init__(self) :
@@ -27,6 +28,12 @@ class Fenetre() :
         self.listbox_mode_de_traitement.insert(2, "Couleur moyenne par image - circulaire")
         self.listbox_mode_de_traitement.insert(3, "Couleurs par clusters")
         self.listbox_mode_de_traitement.pack(side = tk.TOP)
+
+        TpsMin = IntVar() # left handle variable
+        TpsMax = IntVar()  # right handle variable
+        rs1 = RangeSliderH(root, [TpsMin, TpsMax], Width=230, Height=55, padX=17, min_val=0, max_val=5, font_size=12,\
+            line_s_color='black',line_color='black', bar_color_inner='black')
+        rs1.place(x=150, y=420)
 
         # à faire apparaître uniquement pour le k_means
         self.var_qualité = tk.DoubleVar
