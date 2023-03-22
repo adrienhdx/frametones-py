@@ -4,7 +4,7 @@ import os
 import vicosis_utils as utils
 import time
 
-video_path = r"C:\Users\adrhd\Videos\Captures\blade_runner_2049.mp4"
+video_path = r"C:\Users\adrhd\Videos\Captures\max_leon.mkv"
 out_path = r'C:\Users\adrhd\Documents\GitHub\vicosis'
 
 filename = os.path.splitext(os.path.basename(video_path))[0] # get filename without extension for saving the image file
