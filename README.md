@@ -4,5 +4,4 @@ Video Color Analysis : a Python library implementing various computer vision met
 ## TODO :
 
 ### Backend
-Create definite structure and functions for color analysis
-More precisely, every function should have the same ins and outs, especially in regards to time prints, FPS count and image dimensions
+Build the circle avg processor

@@ -15,7 +15,16 @@ import os
 #   - GUI (tkinter)
 #
 
-def average_frame_color_HSV(img):
+"""
+Pour ouvrir un dossier ou un fichier dans l'explorateur de fichier :
+en gros pour charger le film depuis tkinter
+
+from tkinter import filedialog
+tk.Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+folder_path = filedialog.askdirectory()
+"""
+
+def avg_strip_HSV(img):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
     avg_h = np.average(h)
@@ -25,7 +34,7 @@ def average_frame_color_HSV(img):
     _avg_color_rgb = cv2.cvtColor(_avg_color_hsv, cv2.COLOR_HSV2BGR)
     return _avg_color_rgb[0][0]
 
-def average_frame_color_RGB(img):
+def avg_strip_RGB(img):
     return np.average(img, axis=(0,1))
 
 # generate X random integers so that their sum adds up to 100
@@ -34,15 +43,6 @@ def generate_random_importance(nb_colors, max):
     random_importance = np.random.randint(0, max, nb_colors)
     random_importance = random_importance*max // random_importance.sum()
     return random_importance
-
-"""
-Pour ouvrir un dossier ou un fichier dans l'explorateur de fichier :
-en gros pour charger le film depuis tkinter
-
-from tkinter import filedialog
-tk.Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-folder_path = filedialog.askdirectory()
-"""
 
 def fx_strip(image, color_count=7, quality=1, height=100):
 
@@ -164,29 +164,41 @@ def process_avg(source, frame_count, output_height, logging=True, high_res=False
             if high_res:
                 frame = cv2.resize(frame, (480, 360))
 
-            output_image[:, i] = average_frame_color_RGB  #average_frame_color_HSV(frame)
+            output_image[:, i] = avg_strip_RGB(frame)  #average_frame_color_HSV(frame)
 
             if logging:
                 print(f"Frame {i+1}/{frame_count} done")
     else:
         
         # fix aspect ratio to 4:3
-        # output_height = 1500
-        # width = 1500 * 3/4 = 1125    
-        # max_radius = sqrt( (height/2)^2 + (width/2)^2 ) = sqrt( (1500)^2 + (1125)^2 ) = 1875
+        aspect = 1.333
 
-        # fix height and max radius
-        # given the radius (=frame_count), calculate the width ?
-        # width = 
+        output_width = int(output_height / aspect)   
+
+        diagonal = np.sqrt(output_height**2 + output_width**2)      # max number of 1px circles
+        circle_width = int(diagonal / frame_count)                  
         
-        # output_image = np.zeros((output_height, width, 3), np.uint8)
-        # for i in range(frame_count):
-        #     source.set(cv2.CAP_PROP_POS_FRAMES, frame_step * i)
-        #     frame = source.read()[1]
-        #     color = np.average(frame, axis=(0, 1))
-        #     draw circle :
-        #     cv2.circle(output_image, (x, y), i, color, -1)
+        output_image = np.zeros((output_height, output_width, 3), np.uint8)
 
-        # throwaway
-        output_image = np.zeros((output_height, frame_count, 3), np.uint8)
+        colors = []
+
+        # calculate frame step
+        source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT))
+        frame_step = source_frame_count // frame_count
+
+        # get color list
+        for i in range(frame_count):
+            source.set(cv2.CAP_PROP_POS_FRAMES, frame_step * i)
+            frame = source.read()[1]
+
+            frame = cv2.resize(frame, (240, 120))
+
+            colors.append(avg_strip_RGB(frame))  #average_frame_color_HSV(frame)
+            if logging:
+                print(f"Frame {i+1}/{frame_count} processed")
+
+        # create circles for every color
+        for i in reversed(range(frame_count)):
+            cv2.circle(output_image, (0,0), i*circle_width, (colors[i].tolist()), -1) # color is BGR
+
     return output_image
