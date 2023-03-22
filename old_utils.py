@@ -6,6 +6,61 @@ import cv2
 import time
 import colorsys
 import fast_colorthief as thief
+import matplotlib.pyplot as plt
+
+
+def load_video(video_path, nb_frames):
+    """return a list of frames from a video
+
+    Args:
+        video_path (string): path to the video
+        nb_frames (int): number of frames to load
+
+    Returns:
+        list: list of frames as np.array
+    """
+    cap = cv2.VideoCapture(video_path)
+    frames = []
+
+    all_film_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    frame_step = all_film_frames // nb_frames
+    print(f"Frame step: {frame_step}")
+
+    for i in range(0, all_film_frames, frame_step):
+        cap.set(cv2.CAP_PROP_POS_FRAMES, i)
+        ret, frame = cap.read()
+        frames.append(frame)
+        print(f"Loaded frame {i+1}/{all_film_frames}")
+    
+    """ Load the first nb_frames frames instead (super fast)
+    for i in range(nb_frames):
+        ret, frame = cap.read()
+        frames.append(frame)"""
+    
+    return frames
+
+def load_frame(video_path, frame_number):
+    """UNUSED - return a frame from a video
+
+    Args:
+        video_path (string): path to the video
+        frame_number (int): number of the frame to load
+
+    Returns:
+        np.array: frame as np.array
+    """
+    cap = cv2.VideoCapture(video_path)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+    ret, frame = cap.read()
+    return frame
+
+
+def plot_histogram(frame):  
+    for i, col in enumerate(['b', 'g', 'r']):
+        hist = cv2.calcHist([frame], [i], None, [256], [0, 256])
+        plt.plot(hist, color = col)
+        plt.xlim([0,256])
+    plt.show()
 
 def palette_strip_priority(image_path, no_colors=7):
 

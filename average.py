@@ -9,25 +9,25 @@
 
 import cv2 #pip install opencv-python
 import numpy as np
-import vicosis_utils as vcs
+import vicosis_utils as utils
 import time
 import os
 
 #video_path = r"C:\Users\adrhd\Documents\GitHub\vicosis\videoplayback.mp4"
-video_path = r"C:\Users\adrhd\Videos\2001_480p.mp4"
-out_path = r'C:\Users\adrhd\Documents\GitHub\vicosis\images'
+video_path = r"C:\Users\adrhd\Videos\Captures\blade_runner_2049.mp4"
+out_path = r'C:\Users\adrhd\Documents\GitHub\vicosis'
 
 filename = os.path.splitext(os.path.basename(video_path))[0]
 
 start = time.time()
 
+nb_frames = 1500 # most important, 1000 frames per hour is satisfactory
 
-nb_frames = 2500 # most important, 1000 frames per hour is satisfactory
+video = cv2.VideoCapture(video_path)
 
+output_height = 128
 
-output_height = nb_frames//10 # arbitrary but good enough
-
-output_image = vcs.average_strip(video_path, output_height, nb_frames)
+output_image = utils.process_avg(source=video, frame_count=nb_frames, output_height=output_height, logging=True, high_res=True)
 
 os.chdir(out_path)
 
