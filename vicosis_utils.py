@@ -111,9 +111,9 @@ def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
     return output_image
 
 
-def process_fx(source, frame_count, output_height, color_count=7, quality=1, logging=True):
+def process_fx(source, frame_count, output_height, color_count=7, quality=1, logging=True, end_credits=7200):
 
-    source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT))
+    source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits
     frame_step = source_frame_count // frame_count
     
     output_image = np.zeros((output_height, frame_count, 3), np.uint8)
@@ -130,9 +130,9 @@ def process_fx(source, frame_count, output_height, color_count=7, quality=1, log
 
     return output_image
 
-def process_kmeans(source, frame_count, output_height, color_count=7, logging=True, high_res=False):
+def process_kmeans(source, frame_count, output_height, color_count=7, logging=True, high_res=False, end_credits=7200):
 
-    source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT))
+    source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits
     frame_step = source_frame_count // frame_count
     
     output_image = np.zeros((output_height+4, frame_count, 3), np.uint8)
@@ -149,9 +149,9 @@ def process_kmeans(source, frame_count, output_height, color_count=7, logging=Tr
 
     return output_image
 
-def process_avg(source, frame_count, output_height, logging=True, high_res=False, circle=False):
+def process_avg(source, frame_count, output_height, logging=True, high_res=False, circle=False, end_credits=7200):
 
-    source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT))
+    source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits # remove end credits
     frame_step = source_frame_count // frame_count
     
     if not circle:
@@ -171,7 +171,7 @@ def process_avg(source, frame_count, output_height, logging=True, high_res=False
     else:
         
         # fix aspect ratio to 4:3
-        aspect = 1.333
+        aspect = 2.93
 
         output_width = int(output_height / aspect)   
 
@@ -181,10 +181,6 @@ def process_avg(source, frame_count, output_height, logging=True, high_res=False
         output_image = np.zeros((output_height, output_width, 3), np.uint8)
 
         colors = []
-
-        # calculate frame step
-        source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT))
-        frame_step = source_frame_count // frame_count
 
         # get color list
         for i in range(frame_count):

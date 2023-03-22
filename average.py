@@ -14,7 +14,7 @@ import time
 import os
 
 #video_path = r"C:\Users\adrhd\Documents\GitHub\vicosis\videoplayback.mp4"
-video_path = r"C:\Users\adrhd\Videos\Captures\blade_runner_2049.mp4"
+video_path = r"C:\Users\adrhd\Videos\Captures\max_leon.mkv"
 out_path = r'C:\Users\adrhd\Documents\GitHub\vicosis'
 
 filename = os.path.splitext(os.path.basename(video_path))[0]
@@ -27,7 +27,7 @@ video = cv2.VideoCapture(video_path)
 
 output_height = 128
 
-output_image = utils.process_avg(source=video, frame_count=nb_frames, output_height=output_height, logging=True, high_res=True)
+output_image = utils.process_avg(source=video, frame_count=nb_frames, output_height=output_height, logging=True, high_res=True, end_credits=15000)
 
 os.chdir(out_path)
 
