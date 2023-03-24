@@ -36,17 +36,23 @@ class Fenetre() :
         self.end_time = IntVar()
         self.end_time.set(20)
 
-        self.images_to_compute = IntVar()
-        self.images_to_compute.set(1500)
+        self.images_to_compute = 1500
 
         self.progress = IntVar()
         self.progress.set(100)
+
+        # Styles
 
         self.radiostyle = ttk.Style()
         self.radiostyle.configure('white.TRadiobutton', background='white')
 
         self.labelstyle = ttk.Style()
         self.labelstyle.configure('white.TLabel', background='white')
+
+        # Source images
+
+        self.empty_preview = PhotoImage(file='empty_preview.png')
+        self.handle = PhotoImage(file='handle.png')
 
         # Lancement des fonctions
         self.creer_widgets(self.racine)
@@ -61,7 +67,7 @@ class Fenetre() :
         self.projectname_header.place(x=304, y=10)
 
         self.projectversion_header = ttk.Label(root, text = 'version 1.0', font='Arial 11 italic', style='white.TLabel')
-        self.projectversion_header.place(x=322, y=33)
+        self.projectversion_header.place(x=322, y=30)
 
         # MIDDLE LEFT
         # Source (header)
@@ -82,9 +88,10 @@ class Fenetre() :
 
         self.selectfile_entry = ttk.Entry(root, width = 29, font='Arial 10', background='white')
         self.selectfile_entry.place(x=73, y=94)
-        self.selectfile_entry.insert(INSERT, r"C:\Users\adrhd\Documents\GitHub\vicosis\circles_200f_240p_14.22s.png")
+        self.selectfile_entry.insert(INSERT, "Sélectionner un fichier source")
+        self.selectfile_entry.configure(state='readonly')
 
-        self.selectfile_button = ttk.Button(root, text = '...', width=3)
+        self.selectfile_button = ttk.Button(root, text = '...', width=3, command=self.load_film)
         self.selectfile_button.place(x=282, y=94)
 
         self.highres_checkbox = ttk.Checkbutton(root, onvalue=1, offvalue=0, variable=self.highres)
@@ -142,17 +149,17 @@ class Fenetre() :
         self.rightimage_label = ttk.Label(root, text = 'dernière image', font='Arial 10 italic', style='white.TLabel')
         self.rightimage_label.place(x=530, y=94)
 
-        self.leftimage_image = PhotoImage(file=r"empty_image.png", width=120, height=60)
+        self.leftimage_image = self.empty_preview
         self.leftimage_label = ttk.Label(root, image=self.leftimage_image)
         self.leftimage_label.place(x=400, y=114)
 
-        self.rightimage_image = PhotoImage(file=r"empty_image.png", width=120, height=60)
+        self.rightimage_image = self.empty_preview
         self.rightimage_label = ttk.Label(root, image=self.rightimage_image)
         self.rightimage_label.place(x=530, y=114)
 
         self.time_rangeslider = RangeSliderH(root, [self.start_time, self.end_time], Width=255, Height=45, padX=17, min_val=0, max_val=20, font_size=10,\
      line_s_color='black',line_color='black', bar_color_inner='white', bar_color_outer='black',  line_width=1, bar_radius=8, font_family='Arial', show_value=True,\
-        valueSide='BOTTOM', digit_precision='.0f')
+        valueSide='BOTTOM', digit_precision='.0f', imageL=self.handle, imageR=self.handle, auto=False)
         self.time_rangeslider.place(x=400, y=180)
 
         self.refresh_button = ttk.Button(root, text = 'Actualiser', width=10)
@@ -180,12 +187,32 @@ class Fenetre() :
         self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20)
         self.begin_button.place(x=300, y=350)
 
-        self.progressbar = ttk.Progressbar(root, orient=HORIZONTAL, length=574, mode='determinate', maximum=500, variable=self.progress)
+        self.progressbar = ttk.Progressbar(root, orient=HORIZONTAL, length=574, mode='determinate', maximum=self.images_to_compute, variable=self.progress)
         self.progressbar.place(x=73, y=390)
 
-        self.progress_text = Text(root, width=81, height=2, font='Arial 10')
-        self.progress_text.place(x=75, y=420)
-        self.progress_text.insert(INSERT, 'Images traitées : 100/500')
+        self.info_text = Text(root, width=81, height=2, font='Arial 10')
+        self.info_text.place(x=75, y=420)
+
+
+    def load_film(self):
+        self.selectfile_entry.config(state='normal')
+        self.film_path = filedialog.askopenfilename(title = "Choisir un fichier", filetypes = (("Video files", "*.mp4"), ("all files", "*.*")))
+        self.selectfile_entry.delete(0, END)
+        self.selectfile_entry.insert(0, self.film_path)
+        # check if the file is valid :
+
+        # disable entry
+        self.selectfile_entry.config(state='readonly')
+
+        # log information in the text box
+        self.info_text.insert(INSERT, 'Fichier vidéo chargé : ' + self.film_path +' \n')
+
+    def refresh_preview(self):
+        # get the first image at the start time
+        # get the last image at the end time
+        # update the images
+        pass
+
 
 
 
