@@ -8,9 +8,9 @@ start = time.time()
 # fixed parameters
 height = 1500
 resolution = 240
-frames = 350
+frames = 200
 
-video_path = r"C:\Users\adrhd\Videos\Captures\max_leon.mkv"
+video_path = r"C:\Users\adrhd\Videos\Captures\blade_runner_2049.mp4"
 out_path = r'C:\Users\adrhd\Documents\GitHub\vicosis'
 
 source = cv2.VideoCapture(video_path)

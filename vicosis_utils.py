@@ -171,7 +171,7 @@ def process_avg(source, frame_count, output_height, logging=True, high_res=False
     else:
         
         # fix aspect ratio to 4:3
-        aspect = 2.93
+        aspect = 1.333
 
         output_width = int(output_height / aspect)   
 
