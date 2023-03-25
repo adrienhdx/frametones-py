@@ -17,7 +17,7 @@ K=7
 # load video as a cv2 object
 cap = cv2.VideoCapture(video_path)
 
-output_image = utils.process_kmeans(source=cap, frame_count=nb_frames, output_height=height, color_count=K, logging=True, high_res=True)
+output_image = utils.process_kmeans(source=cap, frame_count=nb_frames, output_height=height, color_count=K, high_res=True)
 
 out_path = filedialog.askdirectory(title = "Choisir un dossier de destination", mustexist=True)
 os.chdir(out_path)

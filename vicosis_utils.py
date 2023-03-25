@@ -6,6 +6,7 @@ import colorsys
 import fast_colorthief as thief
 import time
 import os
+import tkinter as tk
 
 # Video Color Analysis (ViCoSIS) Utilities
 # this file will hold all color analysis functions as well as other practicalities
@@ -130,7 +131,7 @@ def process_fx(source, frame_count, output_height, color_count=7, quality=1, log
 
     return output_image
 
-def process_kmeans(source, frame_count, output_height, color_count=7, logging=True, high_res=False, end_credits=7200):
+def process_kmeans(source, frame_count, output_height, logging=True, color_count=7, high_res=False, end_credits=7200):
 
     source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits
     frame_step = source_frame_count // frame_count
@@ -138,16 +139,19 @@ def process_kmeans(source, frame_count, output_height, color_count=7, logging=Tr
     output_image = np.zeros((output_height+4, frame_count, 3), np.uint8)
 
     for i in range(frame_count):
+        frame_time_start = time.time()
+
         source.set(cv2.CAP_PROP_POS_FRAMES, frame_step * i)
         ret, frame = source.read()
         output_image[:, i] = kmeans_strip(image=frame, color_count=color_count, strip_height=output_height+4, compress=high_res)[:, 0]
-
         if logging:
             print(f"Frame {i+1}/{frame_count} done")
+            print(f"FPS: {1/(time.time()-frame_time_start):.2f}")
     
     output_image = output_image[4:, :, :]
 
     return output_image
+
 
 def process_avg(source, frame_count, output_height, logging=True, high_res=False, circle=False, end_credits=7200):
 

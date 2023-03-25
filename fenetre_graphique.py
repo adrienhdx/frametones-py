@@ -2,7 +2,7 @@
 
 import tkinter as tk
 from tkinter import filedialog
-from RangeSlider.RangeSlider import RangeSliderH, RangeSliderV 
+from RangeSlider import RangeSliderH
 
 class Fenetre() :
     def __init__(self) :
