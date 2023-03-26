@@ -10,24 +10,17 @@ from RangeSlider import RangeSliderH
 import numpy as np
 import psutil #pip install psutil
 
-# TODO CPU usage
-# TODO resize to 900x600
-# TODO display image
-# TODO default directories for file explorer
-# TODO hide preview images (PIL.ImageTk)
-# TODO FPS count is broken
-
 class Fenetre() :
     def __init__(self) :
         # Initialisation de la fenêtre racine
-        self.racine = Tk()
+        self.root = Tk()
 
         # fond blanc
-        self.racine.configure(bg='white')
+        self.root.configure(bg='white')
 
         # Attributs esthétiques de la fenêtre
-        self.racine.title('Menu principal')
-        self.racine.geometry('720x480')
+        self.root.title('Menu principal')
+        self.root.geometry('720x480')
 
         # Film info
 
@@ -52,7 +45,7 @@ class Fenetre() :
         self.end_frame_number = IntVar(value=340000)
 
         self.frame_count = IntVar()
-        self.frame_count.set(10)
+        self.frame_count.set(150)
 
         self.progress = IntVar()
         self.progress.set(0)
@@ -71,8 +64,8 @@ class Fenetre() :
         self.handle = PhotoImage(file='resources/handle.png')
 
         # Lancement des fonctions
-        self.creer_widgets(self.racine)
-        self.racine.mainloop()
+        self.creer_widgets(self.root)
+        self.root.mainloop()
 
     def creer_widgets(self, root):
         # TOP
@@ -216,7 +209,10 @@ class Fenetre() :
 
 
     def load_film(self):
-        self.film_path = filedialog.askopenfilename(title = "Choisir un fichier", filetypes = (("Video files", "*.mp4"), ("all files", "*.*")))
+        self.film_path = filedialog.askopenfilename(title = "Choisir un fichier", filetypes = (("Video files", "*.mp4"), ("all files", "*.*")), initialdir=os.path.expanduser('~\Videos'))
+
+        if self.film_path == '':
+            return
 
         self.selectfile_entry.config(state='normal')
         self.selectfile_entry.delete(0, END)
@@ -233,6 +229,8 @@ class Fenetre() :
         # update slider
         self.time_rangeslider.max_val=self.n_film_frames
         self.time_rangeslider.forceValues([0, self.n_film_frames])
+
+        self.refresh_preview()
 
 
     def refresh_preview(self):
@@ -289,9 +287,9 @@ class Fenetre() :
         if not circle:
             output_image = np.zeros((self.output_height, frame_count, 3), np.uint8)
 
-            frame_start_time = time.time()
-
             for i in range(frame_count):
+                frame_start_time = time.time()
+
                 self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
                 frame = self.source.read()[1]
 
@@ -315,10 +313,10 @@ class Fenetre() :
 
             colors = []
 
-            frame_start_time = time.time()
-
             # get color list
             for i in range(frame_count):
+                frame_start_time = time.time()
+
                 self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
                 frame = self.source.read()[1]
 
@@ -358,7 +356,7 @@ class Fenetre() :
 
         start_time = time.time()
 
-        out_path = filedialog.askdirectory(title = "Choisir un dossier de destination", mustexist=True)
+        out_path = filedialog.askdirectory(title = "Choisir un dossier de destination", mustexist=True, initialdir=os.path.expanduser('~\Videos'))
         os.chdir(out_path)
 
         self.frame_step = (self.end_frame_number.get() - self.start_frame_number.get()) // self.frame_count.get()
@@ -380,6 +378,10 @@ class Fenetre() :
         self.write_info(self.info_text, f"Image enregistrée dans {out_path}\n")
         self.write_info(self.info_text, f"Temps de traitement : {time.time()-start_time:.1f}s\n")
 
+        # display image
+        cv2.imshow("output", output_image)
+        cv2.waitKey(0)
+        self.root.destroy()
         
 
     def disable_all(self):
@@ -394,6 +396,19 @@ class Fenetre() :
         self.refresh_button.config(state='disabled')
         self.quality_slider.config(state='disabled')
         self.imagecount_slider.config(state='disabled')
+
+    def enable_all(self):
+        # enable everything after processing
+        self.begin_button.config(state='normal')
+        self.selectfile_button.config(state='normal')
+        self.selectfile_entry.config(state='normal')
+        self.meanbands_radiobutton.config(state='normal')
+        self.meancircle_radiobutton.config(state='normal')
+        self.clusters_radiobutton.config(state='normal')
+        self.highres_checkbox.config(state='normal')
+        self.refresh_button.config(state='normal')
+        self.quality_slider.config(state='normal')
+        self.imagecount_slider.config(state='normal')
 
     def log_progress(self, i, start_time):
             # notify progress
