@@ -74,7 +74,7 @@ def fx_strip(image, color_count=7, quality=1, height=100):
 def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
 
     if compress : 
-        image = cv2.resize(image, (480, 360))
+        image = cv2.resize(image, (240, 180))
     
     Z = image.reshape((-1,3))
     # convert to np.float32
@@ -177,6 +177,8 @@ def process_avg(source, frame_count, output_height, logging=True, high_res=False
         # fix aspect ratio to 4:3
         aspect = 1.333
 
+        start_time = time.time()
+
         output_width = int(output_height / aspect)   
 
         diagonal = np.sqrt(output_height**2 + output_width**2)      # max number of 1px circles
@@ -197,8 +199,11 @@ def process_avg(source, frame_count, output_height, logging=True, high_res=False
             if logging:
                 print(f"Frame {i+1}/{frame_count} processed")
 
+        print(f"    Colors computed in {time.time() - start_time}")
+
         # create circles for every color
         for i in reversed(range(frame_count)):
             cv2.circle(output_image, (0,0), i*circle_width, (colors[i].tolist()), -1) # color is BGR
+
 
     return output_image

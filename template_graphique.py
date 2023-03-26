@@ -14,8 +14,8 @@ import psutil #pip install psutil
 # TODO resize to 900x600
 # TODO display image
 # TODO default directories for file explorer
-# TODO hide preview images
-# TODO connect other processors
+# TODO hide preview images (PIL.ImageTk)
+# TODO FPS count is broken
 
 class Fenetre() :
     def __init__(self) :
@@ -67,8 +67,8 @@ class Fenetre() :
 
         # Source images
 
-        self.empty_preview = PhotoImage(file='empty_preview.png')
-        self.handle = PhotoImage(file='handle.png')
+        self.empty_preview = PhotoImage(file='resources/empty_preview.png')
+        self.handle = PhotoImage(file='resources/handle.png')
 
         # Lancement des fonctions
         self.creer_widgets(self.racine)
@@ -200,7 +200,7 @@ class Fenetre() :
         # Barre de progression (progressbar)
         # images traitées (text)
 
-        self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command=self.DEBUG_load_settings)
+        self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command=self.process_film)
         self.begin_button.place(x=300, y=350)
 
         self.progressbar = ttk.Progressbar(root, orient=HORIZONTAL, length=574, mode='determinate', maximum=self.frame_count.get(), variable=self.progress)
@@ -253,11 +253,11 @@ class Fenetre() :
         end_frame = cv2.resize(end_frame, (120, 60))
 
         # write images as files
-        cv2.imwrite('start_frame.png', start_frame)
-        cv2.imwrite('end_frame.png', end_frame)
+        cv2.imwrite('resources/start_frame.png', start_frame)
+        cv2.imwrite('resources/end_frame.png', end_frame)
         # update the images
-        self.leftimage_image = PhotoImage(file='start_frame.png')
-        self.rightimage_image = PhotoImage(file='end_frame.png')
+        self.leftimage_image = PhotoImage(file='resources/start_frame.png')
+        self.rightimage_image = PhotoImage(file='resources/end_frame.png')
 
         self.leftimage_label.config(image=self.leftimage_image)
         self.rightimage_label.config(image=self.rightimage_image)
@@ -282,32 +282,71 @@ class Fenetre() :
 
         self.process_film()
 
+    def process_avg(self, circle=False):
+    
+        frame_count = self.frame_count.get()
+
+        if not circle:
+            output_image = np.zeros((self.output_height, frame_count, 3), np.uint8)
+
+            frame_start_time = time.time()
+
+            for i in range(frame_count):
+                self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
+                frame = self.source.read()[1]
+
+                if bool(self.highres.get()):
+                    frame = cv2.resize(frame, (240, 180))
+
+                output_image[:, i] = utils.avg_strip_RGB(frame)  #average_frame_color_HSV(frame)
+
+                self.log_progress(i, frame_start_time)
+        else:
+            
+            # fix aspect ratio to 4:3
+            aspect = 1.333
+
+            output_width = int(self.output_height / aspect)   
+
+            diagonal = np.sqrt(self.output_height**2 + output_width**2)      # max number of 1px circles
+            circle_width = int(diagonal / frame_count)                  
+            
+            output_image = np.zeros((self.output_height, output_width, 3), np.uint8)
+
+            colors = []
+
+            frame_start_time = time.time()
+
+            # get color list
+            for i in range(frame_count):
+                self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
+                frame = self.source.read()[1]
+
+                frame = cv2.resize(frame, (240, 180))
+
+                colors.append(utils.avg_strip_RGB(frame))  #average_frame_color_HSV(frame)
+            
+                self.log_progress(i, frame_start_time)
+
+            # create circles for every color
+            for i in reversed(range(frame_count)):
+                cv2.circle(output_image, (0,0), i*circle_width, (colors[i].tolist()), -1) # color is BGR
+
+        return output_image
 
     def process_kmeans(self):
         
-        output_image = np.zeros((self.output_height+4, self.frame_count.get(), 3), np.uint8)
+        frame_count = self.frame_count.get()
+        output_image = np.zeros((self.output_height+4, frame_count, 3), np.uint8)
 
-        for i in range(self.frame_count.get()):
+        for i in range(frame_count):
             frame_start_time = time.time()
 
             self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
             frame = self.source.read()[1]
             output_image[:, i] = utils.kmeans_strip(image=frame, color_count=self.quality.get(), strip_height=self.output_height+4, compress=bool(self.highres.get()))[:, 0]
 
-            # notify progress
-            self.progress.set(i+1)
-            self.delete_all_info(self.info_text)
-            self.delete_all_info(self.usage_text)
-
-            self.write_info(self.info_text, f"Image {i+1}/{self.frame_count.get()} traitée\n")
-            self.write_info(self.info_text, f"FPS: {1/(time.time()-frame_start_time):.1f}\n")
-
-            self.write_info(self.usage_text, f"RAM: {psutil.virtual_memory()[2]}%\n")
-            #self.write_info(self.usage_text, f"CPU: {cpu_usage}%\n")
-
-            self.progressbar.update()
-            self.info_text.update()
-            self.usage_text.update()
+            self.log_progress(i, frame_start_time)
 
         output_image = output_image[4:, :, :]
 
@@ -327,9 +366,9 @@ class Fenetre() :
 
         match self.mode.get():
             case 1: # Bands
-                print("Process bands")
+                output_image = self.process_avg(circle=False)
             case 2: # Circles
-                print("Process circles")
+                output_image = self.process_avg(circle=True)
             case 3: # KMeans
                 # paramètres bancals
                 output_image = self.process_kmeans()
@@ -342,7 +381,6 @@ class Fenetre() :
         self.write_info(self.info_text, f"Temps de traitement : {time.time()-start_time:.1f}s\n")
 
         
-        self.racine.destroy()
 
     def disable_all(self):
         # disable everything while processing
@@ -357,6 +395,21 @@ class Fenetre() :
         self.quality_slider.config(state='disabled')
         self.imagecount_slider.config(state='disabled')
 
+    def log_progress(self, i, start_time):
+            # notify progress
+            self.progress.set(i+1)
+            self.delete_all_info(self.info_text)
+            self.delete_all_info(self.usage_text)
+
+            self.write_info(self.info_text, f"Image {i+1}/{self.frame_count.get()} traitée\n")
+            self.write_info(self.info_text, f"FPS: {1/(time.time()-start_time):.1f}\n")
+
+            self.write_info(self.usage_text, f"RAM: {psutil.virtual_memory()[2]}%\n")
+            #self.write_info(self.usage_text, f"CPU: {cpu_usage}%\n")
+
+            self.progressbar.update()
+            self.info_text.update()
+            self.usage_text.update()
 
     
 
