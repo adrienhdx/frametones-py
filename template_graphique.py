@@ -445,6 +445,7 @@ class Fenetre() :
 
     def reset_vars(self):
         # reset variables
+        # dunno what to add there
         self.progress.set(0)
 
     def log_progress(self, i, start_time):
