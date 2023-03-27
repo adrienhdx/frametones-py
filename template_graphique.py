@@ -30,25 +30,18 @@ class Fenetre() :
 
         # Processor settings
 
-        self.output_height = 128
+        self.output_height = IntVar(value=128)
 
-        self.highres = IntVar()
-        self.highres.set(0)
+        self.highres = IntVar(value=0)
 
-        self.mode = IntVar()
-        self.mode.set(1)
-
-        self.quality = IntVar()
-        self.quality.set(7)
+        self.mode = IntVar(value=1)
 
         self.start_frame_number = IntVar(value=0)
         self.end_frame_number = IntVar(value=340000)
 
-        self.frame_count = IntVar()
-        self.frame_count.set(150)
+        self.frame_count = IntVar(value=150)
 
-        self.progress = IntVar()
-        self.progress.set(0)
+        self.progress = IntVar(value=0)
 
         # Styles
 
@@ -115,26 +108,26 @@ class Fenetre() :
         self.processing_header = ttk.Label(root, text = 'Paramètres de traitement', font='Arial 11 bold', style='white.TLabel')
         self.processing_header.place(x=73, y=180)
 
-        self.meanbands_radiobutton = ttk.Radiobutton(root, text = 'Couleur moyenne par image - bandes', value=1, variable=self.mode, style='white.TRadiobutton')
+        self.meanbands_radiobutton = ttk.Radiobutton(root, text = 'Couleur moyenne par image - bandes', value=1, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
         self.meanbands_radiobutton.place(x=73, y=203)
 
-        self.meancircle_radiobutton = ttk.Radiobutton(root, text = 'Couleur moyenne par image - circulaire', value=2, variable=self.mode, style='white.TRadiobutton')
+        self.meancircle_radiobutton = ttk.Radiobutton(root, text = 'Couleur moyenne par image - circulaire', value=2, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
         self.meancircle_radiobutton.place(x=73, y=222)
 
-        self.clusters_radiobutton = ttk.Radiobutton(root, text = 'Couleurs par clusters', value=3, variable=self.mode, style='white.TRadiobutton')
+        self.clusters_radiobutton = ttk.Radiobutton(root, text = 'Couleurs par clusters', value=3, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
         self.clusters_radiobutton.place(x=73, y=241)
 
-        self.fast_label = ttk.Label(root, text = 'Rapide', font='Arial 9 italic', style='white.TLabel')
-        self.fast_label.place(x=73, y=290)
+        #self.fast_label = ttk.Label(root, text = 'Petite', font='Arial 9 italic', style='white.TLabel')
+        #self.fast_label.place(x=73, y=290)
 
-        self.quality_slider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=187, variable=self.quality, background='white')
-        self.quality_slider.place(x=120, y=270)
+        self.output_height_slider = Scale(root, from_=128, to=1024, resolution=16, orient=HORIZONTAL, length=250, variable=self.output_height, background='white')
+        self.output_height_slider.place(x=73, y=270)
 
-        self.slow_label = ttk.Label(root, text = 'Lent', font='Arial 9 italic', style='white.TLabel')
-        self.slow_label.place(x=315, y=290)
+        #self.slow_label = ttk.Label(root, text = 'Grande', font='Arial 9 italic', style='white.TLabel')
+        #self.slow_label.place(x=315, y=290)
 
-        self.quality_label = ttk.Label(root, text = 'Qualité', font='Arial 10', style='white.TLabel')
-        self.quality_label.place(x=192, y=310)
+        self.quality_label = ttk.Label(root, text = 'Hauteur de l\'image', font='Arial 10', style='white.TLabel')
+        self.quality_label.place(x=150, y=310)
 
         # MIDDLE RIGHT
         # Paramètres vidéo (header)
@@ -174,14 +167,14 @@ class Fenetre() :
         self.refresh_button = ttk.Button(root, text = 'Actualiser', width=10, command=self.refresh_preview)
         self.refresh_button.place(x=400, y=225)
 
-        self.large_label = ttk.Label(root, text = 'Gros', font='Arial 9 italic', style='white.TLabel')
-        self.large_label.place(x=400, y=290)
+        #self.large_label = ttk.Label(root, text = 'Gros', font='Arial 9 italic', style='white.TLabel')
+        #self.large_label.place(x=400, y=290)
 
-        self.imagecount_slider = Scale(root, from_=10, to=2500, resolution=10, orient=HORIZONTAL, length=187, variable=self.frame_count, background='white')
-        self.imagecount_slider.place(x=433, y=270)
+        self.imagecount_slider = Scale(root, from_=10, to=2500, resolution=10, orient=HORIZONTAL, length=250, variable=self.frame_count, background='white')
+        self.imagecount_slider.place(x=400, y=270)
 
-        self.thin_label = ttk.Label(root, text = 'Fin', font='Arial 9 italic', style='white.TLabel')
-        self.thin_label.place(x=628, y=290)
+        #self.thin_label = ttk.Label(root, text = 'Fin', font='Arial 9 italic', style='white.TLabel')
+        #self.thin_label.place(x=628, y=290)
 
         self.imagesperhour_label = ttk.Label(root, text = 'Images à traiter', font='Arial 10', style='white.TLabel')
         self.imagesperhour_label.place(x=480, y=310)
@@ -260,6 +253,38 @@ class Fenetre() :
         self.leftimage_label.config(image=self.leftimage_image)
         self.rightimage_label.config(image=self.rightimage_image)
         
+    def set_defaults(self):
+        # default values for each mode
+
+        # Mode 1 : meanbands
+        # Output height = 1024
+        # Frame count = 1500
+
+        # Mode 2 : meancircles
+        # Output height = 512
+        # Frame count = 350
+
+        # Mode 3 : clusters
+        # Output height = 1024
+        # Frame count = 1500
+
+        def1 = [128, 1500]
+        def2 = [1024, 350]
+        def3 = [128, 1500]
+
+        match self.mode.get():
+            case 1:
+                self.output_height.set(def1[0])
+                self.frame_count.set(def1[1])
+            case 2:
+                self.output_height.set(def2[0])
+                self.frame_count.set(def2[1])
+            case 3:
+                self.output_height.set(def3[0])
+                self.frame_count.set(def3[1])
+        
+        self.imagecount_slider.update()
+        self.output_height_slider.update()
 
     def write_info(self, subject, text):
         subject.config(state='normal')
@@ -273,7 +298,7 @@ class Fenetre() :
 
     def DEBUG_load_settings(self):
         
-        out = f"High Res={self.highres.get()} ; Mode={self.mode.get()} ; Quality={self.quality.get()} ; Start frame={self.start_frame_number.get()} ; End frame={self.end_frame_number.get()}\
+        out = f"High Res={self.highres.get()} ; Mode={self.mode.get()} ; Height={self.output_height.get()} ; Start frame={self.start_frame_number.get()} ; End frame={self.end_frame_number.get()}\
  ; Frames={self.frame_count.get()}"
         self.delete_all_info(self.info_text)
         self.write_info(self.info_text, out)
@@ -281,11 +306,11 @@ class Fenetre() :
         self.process_film()
 
     def process_avg(self, circle=False):
-    
+        height = self.output_height.get()
         frame_count = self.frame_count.get()
 
         if not circle:
-            output_image = np.zeros((self.output_height, frame_count, 3), np.uint8)
+            output_image = np.zeros((height, frame_count, 3), np.uint8)
 
             for i in range(frame_count):
                 frame_start_time = time.time()
@@ -301,15 +326,15 @@ class Fenetre() :
                 self.log_progress(i, frame_start_time)
         else:
             
-            # fix aspect ratio to 4:3
-            aspect = 1.333
+            # fix aspect ratio to 16/9
+            aspect = 1.7777777777777777    
 
-            output_width = int(self.output_height / aspect)   
+            output_width = int(height / aspect)   
 
-            diagonal = np.sqrt(self.output_height**2 + output_width**2)      # max number of 1px circles
+            diagonal = np.sqrt(height**2 + output_width**2)      # max number of 1px circles
             circle_width = int(diagonal / frame_count)                  
             
-            output_image = np.zeros((self.output_height, output_width, 3), np.uint8)
+            output_image = np.zeros((height, output_width, 3), np.uint8)
 
             colors = []
 
@@ -333,16 +358,16 @@ class Fenetre() :
         return output_image
 
     def process_kmeans(self):
-        
+        height = self.output_height.get()
         frame_count = self.frame_count.get()
-        output_image = np.zeros((self.output_height+4, frame_count, 3), np.uint8)
+        output_image = np.zeros((height+4, frame_count, 3), np.uint8)
 
         for i in range(frame_count):
             frame_start_time = time.time()
 
             self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
             frame = self.source.read()[1]
-            output_image[:, i] = utils.kmeans_strip(image=frame, color_count=self.quality.get(), strip_height=self.output_height+4, compress=bool(self.highres.get()))[:, 0]
+            output_image[:, i] = utils.kmeans_strip(image=frame, color_count=7, strip_height=height+4, compress=bool(self.highres.get()))[:, 0]
 
             self.log_progress(i, frame_start_time)
 
@@ -351,16 +376,24 @@ class Fenetre() :
         return output_image
     
     def process_film(self):
-
-        self.disable_all()
-
-        start_time = time.time()
+        if self.film_path == "":
+            self.write_info(self.info_text, "Erreur : Aucun fichier vidéo chargé\n")
+            return
 
         out_path = filedialog.askdirectory(title = "Choisir un dossier de destination", mustexist=True, initialdir=os.path.expanduser('~\Videos'))
+
+        if out_path == "":
+            self.write_info(self.info_text, "Erreur : Aucun dossier de destination sélectionné\n")
+            return
+        
+        self.disable_all()
+
         os.chdir(out_path)
 
         self.frame_step = (self.end_frame_number.get() - self.start_frame_number.get()) // self.frame_count.get()
         self.progressbar.config(maximum=self.frame_count.get())
+
+        start_time = time.time()
 
         match self.mode.get():
             case 1: # Bands
@@ -381,34 +414,38 @@ class Fenetre() :
         # display image
         cv2.imshow("output", output_image)
         cv2.waitKey(0)
-        self.root.destroy()
+        cv2.destroyAllWindows()
         
+        self.enable_all()
+        self.reset_vars()     
 
     def disable_all(self):
         # disable everything while processing
         self.begin_button.config(state='disabled')
         self.selectfile_button.config(state='disabled')
-        self.selectfile_entry.config(state='disabled')
         self.meanbands_radiobutton.config(state='disabled')
         self.meancircle_radiobutton.config(state='disabled')
         self.clusters_radiobutton.config(state='disabled')
         self.highres_checkbox.config(state='disabled')
         self.refresh_button.config(state='disabled')
-        self.quality_slider.config(state='disabled')
+        self.output_height_slider.config(state='disabled')
         self.imagecount_slider.config(state='disabled')
 
     def enable_all(self):
         # enable everything after processing
         self.begin_button.config(state='normal')
         self.selectfile_button.config(state='normal')
-        self.selectfile_entry.config(state='normal')
         self.meanbands_radiobutton.config(state='normal')
         self.meancircle_radiobutton.config(state='normal')
         self.clusters_radiobutton.config(state='normal')
         self.highres_checkbox.config(state='normal')
         self.refresh_button.config(state='normal')
-        self.quality_slider.config(state='normal')
+        self.output_height_slider.config(state='normal')
         self.imagecount_slider.config(state='normal')
+
+    def reset_vars(self):
+        # reset variables
+        self.progress.set(0)
 
     def log_progress(self, i, start_time):
             # notify progress
@@ -417,7 +454,7 @@ class Fenetre() :
             self.delete_all_info(self.usage_text)
 
             self.write_info(self.info_text, f"Image {i+1}/{self.frame_count.get()} traitée\n")
-            self.write_info(self.info_text, f"FPS: {1/(time.time()-start_time):.1f}\n")
+            #self.write_info(self.info_text, f"FPS: {1/(time.time()-start_time):.1f}\n")
 
             self.write_info(self.usage_text, f"RAM: {psutil.virtual_memory()[2]}%\n")
             #self.write_info(self.usage_text, f"CPU: {cpu_usage}%\n")
