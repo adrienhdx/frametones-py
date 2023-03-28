@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import vicosis_utils as utils
+import utils
 import time
 
 start = time.time()

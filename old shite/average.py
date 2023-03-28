@@ -9,7 +9,7 @@
 
 import cv2 #pip install opencv-python
 import numpy as np
-import vicosis_utils as utils
+import utils
 import time
 import os
 

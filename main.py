@@ -1,7 +1,7 @@
 
 import cv2 #pip install opencv-python
 import os
-import vicosis_utils as utils
+import utils
 import time
 from tkinter import *
 from tkinter import ttk

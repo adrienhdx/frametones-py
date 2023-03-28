@@ -1,4 +1,4 @@
-import vicosis_utils as utils
+import utils
 import cv2
 import numpy as np
 import time
