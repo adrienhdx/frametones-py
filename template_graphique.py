@@ -268,9 +268,9 @@ class Fenetre() :
         # Output height = 1024
         # Frame count = 1500
 
-        def1 = [128, 1500]
+        def1 = [400, 2000]
         def2 = [1024, 350]
-        def3 = [128, 1500]
+        def3 = [400, 2000]
 
         match self.mode.get():
             case 1:
@@ -399,6 +399,13 @@ class Fenetre() :
             case 1: # Bands
                 output_image = self.process_avg(circle=False)
             case 2: # Circles
+                # check if image count is greater than output height
+                if self.frame_count.get() > self.output_height.get():
+                    self.delete_all_info(self.info_text)
+                    self.write_info(self.info_text, "Attention : Le nombre de cercles est supérieur à la hauteur de l'image\n")
+                    self.enable_all()
+                    return
+
                 output_image = self.process_avg(circle=True)
             case 3: # KMeans
                 # paramètres bancals

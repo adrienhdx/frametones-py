@@ -10,4 +10,3 @@ Video Color Analysis : a Python library implementing various computer vision met
 -  investigate what the fuck filetypes are in filedialog.askdirectory()
 -  write docstrings
 -  repair fps count for circles
--  output image of circles is broken if image count > image height
