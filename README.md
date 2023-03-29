@@ -1,7 +1,9 @@
 # Projet Algo S4 :
 Video Color Analysis : a Python library implementing various computer vision methods to analyse the color profile of a video over time.
 
-# Short-term todo list
+## Short-term todo list
+-  **Film metadata window**
+-  **Web page**
 -  CPU usage (low priority)
 -  resize to 900x600 (at least, even think about fullscreen app)
 -  display output image properly
