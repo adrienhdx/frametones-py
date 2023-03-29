@@ -1,0 +1,11 @@
+{
+    "movies": [
+      {
+        "title": "The Shawshank Redemption",
+        "year": 1994,
+        "director": "Frank Darabont",
+        "genre": "Drama",
+        "palette": "/palettes/the_shawshank_redemption.jpg"
+      }
+    ]
+}

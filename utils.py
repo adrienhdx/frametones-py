@@ -5,6 +5,7 @@ import colorsys
 import time
 import os
 import tkinter as tk
+#from skimage import io, color
 
 # Video Color Analysis (ViCoSIS) Utilities
 # this file will hold all color analysis functions as well as other practicalities
@@ -53,6 +54,7 @@ def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
     Z = image.reshape((-1,3))
     # convert to np.float32
     Z = np.float32(Z)
+    #Z = color.rgb2lab(Z)
     # define criteria, number of clusters(K) and apply kmeans()
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
     K = color_count

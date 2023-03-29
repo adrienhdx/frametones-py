@@ -459,6 +459,7 @@ class MenuPrincipal() :
             self.progressbar.update()
             self.info_text.update()
             self.usage_text.update()
+    
 
     
 
