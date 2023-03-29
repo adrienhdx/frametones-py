@@ -10,7 +10,7 @@ from RangeSlider import RangeSliderH
 import numpy as np
 import psutil #pip install psutil
 
-class Fenetre() :
+class MenuPrincipal() :
     def __init__(self) :
         # Initialisation de la fenêtre racine
         self.root = Tk()
@@ -200,7 +200,6 @@ class Fenetre() :
         self.write_info(self.usage_text, 'En attente\n')
         self.write_info(self.usage_text, '...\n') 
 
-
     def load_film(self):
         self.film_path = filedialog.askopenfilename(title = "Choisir un fichier", filetypes = (("Video files", "*.mp4"), ("all files", "*.*")), initialdir=os.path.expanduser('~\Videos'))
 
@@ -224,7 +223,6 @@ class Fenetre() :
         self.time_rangeslider.forceValues([0, self.n_film_frames])
 
         self.refresh_preview()
-
 
     def refresh_preview(self):
         if self.film_path == '':
@@ -295,15 +293,6 @@ class Fenetre() :
         subject.config(state='normal')
         subject.delete(1.0, END)
         subject.config(state='disabled')
-
-    def DEBUG_load_settings(self):
-        
-        out = f"High Res={self.highres.get()} ; Mode={self.mode.get()} ; Height={self.output_height.get()} ; Start frame={self.start_frame_number.get()} ; End frame={self.end_frame_number.get()}\
- ; Frames={self.frame_count.get()}"
-        self.delete_all_info(self.info_text)
-        self.write_info(self.info_text, out)
-
-        self.process_film()
 
     def process_avg(self, circle=False):
         height = self.output_height.get()
@@ -473,4 +462,4 @@ class Fenetre() :
 
     
 
-app = Fenetre()
+app = MenuPrincipal()

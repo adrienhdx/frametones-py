@@ -1,9 +1,7 @@
 import numpy as np
 import cv2 #pip install opencv-python
 import matplotlib.pyplot as plt
-import extcolors
 import colorsys
-import fast_colorthief as thief
 import time
 import os
 import tkinter as tk
@@ -45,30 +43,6 @@ def generate_random_importance(nb_colors, max):
     random_importance = random_importance*max // random_importance.sum()
     return random_importance
 
-def fx_strip(image, color_count=7, quality=1, height=100):
-
-    # reshape to rgba
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
-
-    palette = thief.get_palette(image, color_count=color_count, quality=quality)
-
-    # hue sort 
-    palette = sorted(palette, key=lambda x: colorsys.rgb_to_hsv(x[0], x[1], x[2])[0])
-
-    output_image = np.zeros((height, 1, 3), np.uint8) # hauteur x largeur x 3 (BGR)
-
-    heights = generate_random_importance(color_count, height)
-    last_height = 0
-    for i in range(len(palette)):
-        height = heights[i]
-        output_image[last_height:last_height+height, 0] = (palette[i][2], palette[i][1], palette[i][0])
-        last_height+=height
-
-    # invert top and bottom
-    output_image = cv2.flip(output_image, 0)
-
-    return output_image
-
 
 # Function to find best K value ?
 def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
@@ -109,26 +83,6 @@ def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
 
     output_image = cv2.flip(output_image, 0)
     
-    return output_image
-
-
-def process_fx(source, frame_count, output_height, color_count=7, quality=1, logging=True, end_credits=7200):
-
-    source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits
-    frame_step = source_frame_count // frame_count
-    
-    output_image = np.zeros((output_height, frame_count, 3), np.uint8)
-
-    for i in range(frame_count):
-        source.set(cv2.CAP_PROP_POS_FRAMES, frame_step * i)
-        ret, frame = source.read()
-        output_image[:, i] = fx_strip(image=frame, color_count=color_count,quality=1, height=output_height)[:, 0]
-
-        if logging:
-            print(f"Frame {i+1}/{frame_count} done")
-    
-    output_image = output_image[4:, :, :]
-
     return output_image
 
 def process_kmeans(source, frame_count, output_height, logging=True, color_count=7, high_res=False, end_credits=7200):
