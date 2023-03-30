@@ -39,7 +39,11 @@ class Fen_infos() :
 
         # Listbox de choix du mode de traitement
         self.listbox_genre = ttk.Listbox(root, text = 'Genre', width = 60, font = 'Arial 13')
-        self.liste_genre = ["Comédie", "Science-fiction", "Horreur", "Romance", "Action", "Thriller", "Drama", "Mystère", "Policier", "Animation", "Aventure", "Fantasy","Comédie-Romance", "Comédie-Action", "Super-héro"]
+        self.liste_genre = [    "Action",    "Aventure",    "Animation",    "Biographie",    "Comédie",
+                                "Crime",    "Documentaire",    "Drame",    "Famille",    "Fantastique",
+                                "Film noir",    "Histoire",    "Horreur",    "Musique",    "Comédie musicale",
+                                "Mystère",    "Romance",    "Science-fiction",    "Sport",    "Thriller",    "Guerre",    "Western"]
+
         for i in range (len(self.liste_genre)-1) :
             texte = f"{self.liste_genre(i)}"
             self.listbox_genre.insert(i+1, texte)
