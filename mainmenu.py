@@ -120,7 +120,7 @@ class MenuPrincipal() :
         #self.fast_label = ttk.Label(root, text = 'Petite', font='Arial 9 italic', style='white.TLabel')
         #self.fast_label.place(x=73, y=290)
 
-        self.output_height_slider = Scale(root, from_=128, to=1024, resolution=16, orient=HORIZONTAL, length=250, variable=self.output_height, background='white')
+        self.output_height_slider = Scale(root, from_=100, to=1000, resolution=10, orient=HORIZONTAL, length=250, variable=self.output_height, background='white')
         self.output_height_slider.place(x=73, y=270)
 
         #self.slow_label = ttk.Label(root, text = 'Grande', font='Arial 9 italic', style='white.TLabel')
@@ -266,9 +266,9 @@ class MenuPrincipal() :
         # Output height = 1024
         # Frame count = 1500
 
-        def1 = [400, 2000]
+        def1 = [300, 1500]
         def2 = [1024, 350]
-        def3 = [400, 2000]
+        def3 = [300, 1500]
 
         match self.mode.get():
             case 1:
