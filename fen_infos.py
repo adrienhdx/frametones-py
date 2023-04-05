@@ -7,7 +7,7 @@ from tkinter import ttk
 class Fen_infos() :
     def __init__(self) :
         #Initialisation de la fenêtre
-        self.fen_infos = Tk()
+        self.fen_infos = Toplevel()
         # Attributs esthétiques
         self.fen_infos.title('Informations du fichier chargé')
         self.fen_infos.geometry('235x575')
