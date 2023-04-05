@@ -1,13 +1,16 @@
+
+import tkinter as tk
 from tkinter import *
 from tkinter import ttk 
+
 
 class Fen_infos() :
     def __init__(self) :
         #Initialisation de la fenêtre
-        self.fen_infos = Tk()
+        self.fen_infos = Toplevel()
         # Attributs esthétiques
         self.fen_infos.title('Informations du fichier chargé')
-        self.fen_infos.geometry('248x275')
+        self.fen_infos.geometry('235x575')
         self.fen_infos.configure(bg = 'white')
         # Lancement du gestionnaire d'évènement 
         self.creer_widgets(self.fen_infos)
@@ -30,33 +33,37 @@ class Fen_infos() :
         self.entree_real = ttk.Entry(root, textvariable = self.var_real, width = 20, font = 'Arial 13')
         self.entree_real.place(x = 22, y = 130)
 
-        self.var_date = StringVar()
-        self.etiquette_date = ttk.Label(root, text = 'Année de sortie')
-        self.etiquette_date.place(x = 22, y = 160)
-        self.entree_date = ttk.Entry(root, width = 7, textvariable = self.var_date, font = 'Arial 13' )
-        self.entree_date.place(x = 22, y = 180)
-
+        self.var_annee = StringVar()
+        self.etiquette_annee = ttk.Label(root, text = 'Année de sortie')
+        self.etiquette_annee.place(x = 22, y = 160)
+        self.entree_annee = ttk.Entry(root, textvariable = self.var_annee, width = 10, font = 'Arial 13')
+        self.entree_annee.place(x = 22, y = 180)
 
         # Listbox de choix du mode de traitement
-        self.listbox_genre = Listbox(root, width = 60, font = 'Arial 13')
-        self.liste_genre = [    "Action",    "Aventure",    "Animation",    "Biographie",    "Comédie",
-                                "Crime",    "Documentaire",    "Drame",    "Famille",    "Fantastique",
-                                "Film noir",    "Histoire",    "Horreur",    "Musique",    "Comédie musicale",
-                                "Mystère",    "Romance",    "Science-fiction",    "Sport",    "Thriller",    "Guerre",    "Western"]
-        self.listbox_genre.insert(0, "Choisir un genre")
-        for i in range (len(self.liste_genre)) :
+        self.etiquette_genre = ttk.Label(root, text = 'Genre du film')
+        self.etiquette_genre.place(x = 22, y = 210)
+        self.scrollbar_genre = ttk.Scrollbar(root)
+        self.listbox_genre = tk.Listbox(root, width = 20, font = 'Arial 13')
+        self.liste_genre = ["Comédie", "Science-fiction", "Horreur", "Romance", "Action", "Thriller", "Drama", "Mystère", "Policier", "Animation", "Aventure", "Fantasy","Comédie-Romance", "Comédie-Action", "Super-héro"]
+        for i in range (len(self.liste_genre)-1) :
             texte = self.liste_genre[i]
             self.listbox_genre.insert(i+1, texte)
-        self.listbox_genre.place(x = 70, y = 180)
+        self.listbox_genre.place(x = 22, y = 240,)
+        
+        self.listbox_genre.config(yscrollcommand = self.scrollbar_genre.set)
+        self.scrollbar_genre.place(x = 210, y = 240, height = 205)
 
-        """# Bouton option charger imdb
+        #Bouton option charger imdb
         self.etiquette_imdb = ttk.Label(root, \
-            text = "Vous pouvez directement charger les informations restantes du film avec l'option suivante si vous le souhaitez. \n"\
+            text = "Vous pouvez directement charger \n les informations restantes du film avec \n l'option suivante si vous le souhaitez. \n"\
                 + " Champ obligatoire : Titre du film") # autres champs obligatoires ?
-        self.etiquette_imdb.place()
+        self.etiquette_imdb.place(x = 14, y = 470)
             
-        self.bouton_imdb = ttk.Button(root, text = 'Option charger depuis IMdB', width = 120)
+        self.bouton_imdb = ttk.Button(root, text = 'Option charger depuis IMdB', width = 30)
         self.bouton_imdb.bind('<Button-1>', self.charger_depuis_imdb)
-        self.bouton_imdb.place(x = 22, y = 150)"""
+        self.bouton_imdb.place(x = 22, y = 535)
+
+    def charger_depuis_imdb(self, event) :
+        pass
            
 app = Fen_infos()
