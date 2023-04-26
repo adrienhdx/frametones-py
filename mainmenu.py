@@ -186,7 +186,7 @@ class MenuPrincipal() :
         # Barre de progression (progressbar)
         # images traitées (text)
 
-        self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command=self.process_film)
+        self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command= self.two_functions(self.process_film,self.open_info_window))
         self.begin_button.place(x=300, y=350)
 
         self.progressbar = ttk.Progressbar(root, orient=HORIZONTAL, length=574, mode='determinate', maximum=self.frame_count.get(), variable=self.progress)
@@ -411,6 +411,12 @@ class MenuPrincipal() :
         cv2.imshow("output", output_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+        #autre possibilité qui permet de faire pop la fenêtre résultat: 
+        #self.fen_res = Tk.Fen_resultat()
+        #self.fen_res.recup_titre(self.titre)
+        #self.fen_res.creer_widgets()
+        #self.fen_res.coller_image_resultat(output_image)
         
         self.enable_all()
         self.reset_vars()     
@@ -460,7 +466,16 @@ class MenuPrincipal() :
             self.info_text.update()
             self.usage_text.update()
     
+    def open_info_window(self) :
+        self.fen_info = tk.Fen_info()
+        self.fen_infos.creer_widgets(MenuPrincipal())
+        self.titre = self.fen_infos.creer_liste_infos()[0]
 
+    def two_functions(self, *functions) :
+        def combine_functions(*args, **kwargs) :
+            for f in functions :
+                f(*args, **kwargs)
+        return combine_functions
     
 
 app = MenuPrincipal()
