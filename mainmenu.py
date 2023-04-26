@@ -20,7 +20,7 @@ class MenuPrincipal() :
 
         # Attributs esthétiques de la fenêtre
         self.root.title('Menu principal')
-        self.root.geometry('720x480')
+        self.root.geometry('1280x720')
 
         # Film info
 
@@ -65,11 +65,11 @@ class MenuPrincipal() :
         # Projet algo S4 (header)
         # version 1.0 (header)
 
-        self.projectname_header = ttk.Label(root, text = 'Projet algo S4', font='Arial 13 bold', style='white.TLabel')
-        self.projectname_header.place(x=304, y=10)
+        self.projectname_header = ttk.Label(root, text = 'Projet algo S4', font='Arial 28 bold', style='white.TLabel')
+        self.projectname_header.place(x=541, y=4)
 
         self.projectversion_header = ttk.Label(root, text = 'version 1.0', font='Arial 11 italic', style='white.TLabel')
-        self.projectversion_header.place(x=322, y=30)
+        self.projectversion_header.place(x=575, y=48)
 
         # MIDDLE LEFT
         # Source (header)
@@ -85,49 +85,49 @@ class MenuPrincipal() :
         # curseur qualité (slider)
         # Qualité (label)
 
-        self.source_header = ttk.Label(root, text = 'Source', font='Arial 11 bold', style='white.TLabel')
-        self.source_header.place(x=73, y=70)
+        self.source_header = ttk.Label(root, text = 'Source', font='Arial 24 bold', style='white.TLabel')
+        self.source_header.place(x=77, y=82)
 
-        self.selectfile_entry = ttk.Entry(root, width = 29, font='Arial 10', background='white')
-        self.selectfile_entry.place(x=73, y=94)
+        self.selectfile_entry = ttk.Entry(root, width = 323, font='Arial 20', background='white')
+        self.selectfile_entry.place(x=77, y=114)
         self.selectfile_entry.insert(INSERT, "Sélectionner un fichier source")
         self.selectfile_entry.configure(state='readonly')
 
-        self.selectfile_button = ttk.Button(root, text = '...', width=3, command=self.load_film)
-        self.selectfile_button.place(x=282, y=94)
+        self.selectfile_button = ttk.Button(root, text = '...', width=32, command=self.load_film)
+        self.selectfile_button.place(x=409, y=114)
 
         self.highres_checkbox = ttk.Checkbutton(root, onvalue=1, offvalue=0, variable=self.highres)
-        self.highres_checkbox.place(x=73, y=135)
+        self.highres_checkbox.place(x=77, y=180)
 
-        self.highres_label1 = ttk.Label(root, text = 'Haute résolution', font='Arial 10', style='white.TLabel')
-        self.highres_label1.place(x=95, y=122)
+        self.highres_label1 = ttk.Label(root, text = 'Haute résolution', font='Arial 20', style='white.TLabel')
+        self.highres_label1.place(x=121, y=170)
 
-        self.highres_label2 = ttk.Label(root, text = 'Sélectionner si la résolution du fichier source\ndépasse 480x360', font='Arial 9 italic', style='white.TLabel')
-        self.highres_label2.place(x=95, y=141)
+        self.highres_label2 = ttk.Label(root, text = 'Sélectionner si la résolution du\n fichier source dépasse 480x360', font='Arial 19 italic', style='white.TLabel')
+        self.highres_label2.place(x=116, y=196)
 
-        self.processing_header = ttk.Label(root, text = 'Paramètres de traitement', font='Arial 11 bold', style='white.TLabel')
-        self.processing_header.place(x=73, y=180)
+        self.processing_header = ttk.Label(root, text = 'Paramètres de traitement', font='Arial 22 bold', style='white.TLabel')
+        self.processing_header.place(x=77, y=274)
 
         self.meanbands_radiobutton = ttk.Radiobutton(root, text = 'Couleur moyenne par image - bandes', value=1, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
-        self.meanbands_radiobutton.place(x=73, y=203)
+        self.meanbands_radiobutton.place(x=77, y=315)
 
         self.meancircle_radiobutton = ttk.Radiobutton(root, text = 'Couleur moyenne par image - circulaire', value=2, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
-        self.meancircle_radiobutton.place(x=73, y=222)
+        self.meancircle_radiobutton.place(x=77, y=362)
 
         self.clusters_radiobutton = ttk.Radiobutton(root, text = 'Couleurs par clusters', value=3, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
-        self.clusters_radiobutton.place(x=73, y=241)
+        self.clusters_radiobutton.place(x=77, y=406)
 
         #self.fast_label = ttk.Label(root, text = 'Petite', font='Arial 9 italic', style='white.TLabel')
         #self.fast_label.place(x=73, y=290)
 
-        self.output_height_slider = Scale(root, from_=100, to=1000, resolution=10, orient=HORIZONTAL, length=250, variable=self.output_height, background='white')
-        self.output_height_slider.place(x=73, y=270)
+        self.output_height_slider = Scale(root, from_=100, to=1000, resolution=10, orient=HORIZONTAL, length=364, variable=self.output_height, background='white')
+        self.output_height_slider.place(x=77, y=479)
 
         #self.slow_label = ttk.Label(root, text = 'Grande', font='Arial 9 italic', style='white.TLabel')
         #self.slow_label.place(x=315, y=290)
 
-        self.quality_label = ttk.Label(root, text = 'Hauteur de l\'image', font='Arial 10', style='white.TLabel')
-        self.quality_label.place(x=150, y=310)
+        self.quality_label = ttk.Label(root, text = 'Hauteur de l\'image', font='Arial 20', style='white.TLabel')
+        self.quality_label.place(x=155, y=530)
 
         # MIDDLE RIGHT
         # Paramètres vidéo (header)
@@ -142,24 +142,24 @@ class MenuPrincipal() :
         # curseur images par heure (slider)
         # Images par heure (label)
 
-        self.videosettings_header = ttk.Label(root, text = 'Paramètres vidéo', font='Arial 11 bold', style='white.TLabel')
-        self.videosettings_header.place(x=400, y=70)
+        self.videosettings_header = ttk.Label(root, text = 'Paramètres vidéo', font='Arial 24 bold', style='white.TLabel')
+        self.videosettings_header.place(x=991, y=82)
 
-        self.leftimage_label = ttk.Label(root, text = 'première image', font='Arial 10 italic', style='white.TLabel')
+        self.leftimage_label = ttk.Label(root, text = 'Première image', font='Arial 20 italic', style='white.TLabel')
         self.leftimage_label.place(x=400, y=94)
 
-        self.rightimage_label = ttk.Label(root, text = 'dernière image', font='Arial 10 italic', style='white.TLabel')
-        self.rightimage_label.place(x=530, y=94)
+        self.rightimage_label = ttk.Label(root, text = 'Dernière image', font='Arial 20 italic', style='white.TLabel')
+        self.rightimage_label.place(x=877, y=138)
 
         self.leftimage_image = self.empty_preview
         self.leftimage_label = ttk.Label(root, image=self.leftimage_image)
-        self.leftimage_label.place(x=400, y=114)
+        self.leftimage_label.place(x=534, y=171)
 
         self.rightimage_image = self.empty_preview
         self.rightimage_label = ttk.Label(root, image=self.rightimage_image)
-        self.rightimage_label.place(x=530, y=114)
+        self.rightimage_label.place(x=883, y=171)
 
-        self.time_rangeslider = RangeSliderH(root, [self.start_frame_number, self.end_frame_number], Width=255, Height=45, padX=25, min_val=0, max_val=self.end_frame_number.get(), font_size=10,\
+        self.time_rangeslider = RangeSliderH(root, [self.start_frame_number, self.end_frame_number], Width=596, Height=45, padX=25, min_val=0, max_val=self.end_frame_number.get(), font_size=10,\
      line_s_color='black',line_color='black', bar_color_inner='white', bar_color_outer='black',  line_width=1, bar_radius=8, font_family='Arial', show_value=True,\
         valueSide='BOTTOM', digit_precision='.0f', imageL=self.handle, imageR=self.handle, auto=False)
         self.time_rangeslider.place(x=400, y=180)
@@ -170,14 +170,14 @@ class MenuPrincipal() :
         #self.large_label = ttk.Label(root, text = 'Gros', font='Arial 9 italic', style='white.TLabel')
         #self.large_label.place(x=400, y=290)
 
-        self.imagecount_slider = Scale(root, from_=10, to=2500, resolution=10, orient=HORIZONTAL, length=250, variable=self.frame_count, background='white')
-        self.imagecount_slider.place(x=400, y=270)
+        self.imagecount_slider = Scale(root, from_=10, to=2500, resolution=10, orient=HORIZONTAL, length=534, variable=self.frame_count, background='white')
+        self.imagecount_slider.place(x=612, y=479)
 
         #self.thin_label = ttk.Label(root, text = 'Fin', font='Arial 9 italic', style='white.TLabel')
         #self.thin_label.place(x=628, y=290)
 
         self.imagesperhour_label = ttk.Label(root, text = 'Images à traiter', font='Arial 10', style='white.TLabel')
-        self.imagesperhour_label.place(x=480, y=310)
+        self.imagesperhour_label.place(x=612, y=479)
 
 
         # BOTTOM
@@ -186,7 +186,7 @@ class MenuPrincipal() :
         # Barre de progression (progressbar)
         # images traitées (text)
 
-        self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command=self.process_film)
+        self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command= self.two_functions(self.process_film,self.open_info_window))
         self.begin_button.place(x=300, y=350)
 
         self.progressbar = ttk.Progressbar(root, orient=HORIZONTAL, length=574, mode='determinate', maximum=self.frame_count.get(), variable=self.progress)
@@ -411,6 +411,12 @@ class MenuPrincipal() :
         cv2.imshow("output", output_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+        #autre possibilité qui permet de faire pop la fenêtre résultat: 
+        #self.fen_res = Tk.Fen_resultat()
+        #self.fen_res.recup_titre(self.titre)
+        #self.fen_res.creer_widgets()
+        #self.fen_res.coller_image_resultat(output_image)
         
         self.enable_all()
         self.reset_vars()     
@@ -460,7 +466,16 @@ class MenuPrincipal() :
             self.info_text.update()
             self.usage_text.update()
     
+    def open_info_window(self) :
+        self.fen_info = tk.Fen_info()
+        self.fen_infos.creer_widgets(MenuPrincipal())
+        self.titre = self.fen_infos.creer_liste_infos()[0]
 
+    def two_functions(self, *functions) :
+        def combine_functions(*args, **kwargs) :
+            for f in functions :
+                f(*args, **kwargs)
+        return combine_functions
     
 
 app = MenuPrincipal()
