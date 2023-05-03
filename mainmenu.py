@@ -459,13 +459,10 @@ class MenuPrincipal() :
             self.info_text.update()
             self.usage_text.update()
     
-<<<<<<< HEAD
     def open_info_window(self) :
         self.fen_info = ttk.Fen_info()
         self.fen_infos.creer_widgets(MenuPrincipal())
         self.titre = self.fen_infos.creer_liste_infos()[0]
-=======
->>>>>>> 747d208e52291560020bc9fdfedb38f274013d19
 
     
 
