@@ -122,7 +122,7 @@ def process_avg(source, frame_count, output_height, logging=True, high_res=False
             frame = source.read()[1]
 
             if high_res:
-                frame = cv2.resize(frame, (480, 360))
+                frame = cv2.resize(frame, (240, 180))
 
             output_image[:, i] = avg_strip_RGB(frame)  #average_frame_color_HSV(frame)
 

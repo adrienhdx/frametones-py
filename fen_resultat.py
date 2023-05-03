@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk 
-from PIL import Image 
+from PIL import Image, ImageTk 
 
 class Fen_resultat() :
     def __init__(self) :
@@ -18,11 +18,17 @@ class Fen_resultat() :
         #self.titre_film = ...
 
     def creer_widgets(self, root) :
-        self.nom_image = ttk.Label(root, text = 'Amelie Poulain', font = 'Times New Roman 15')
+        self.nom_image = ttk.Label(root, text = self.titre, font = 'Times New Roman 15')
         self.nom_image.place(x = 300, y = 40)
         self.canvas = tk.Canvas(root, bg = 'white', width = 750, height = 400)
         self.canvas.pack(side = tk.Toplevel)
-        
-    def coller_image_resultat(self) :
-        pass
+
+    def recup_titre(self, titre) :
+        self.titre = titre
+
+    def coller_image_resultat(self, img) :
+        imgtk = ImageTk.PhotoImage(img,master = Fen_resultat)
+        id_image = self.canvas.create_image(375,200,anchor = tk.CENTER, image = imgtk)
+        #dimensions de l'image connues à l'avance ???
+
 app = Fen_resultat

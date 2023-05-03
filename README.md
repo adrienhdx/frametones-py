@@ -12,8 +12,6 @@ Video Color Analysis : a Python library implementing various computer vision met
 ## Fixes (unordered)
 
 - find a way to hash images
-- nervosity (image correlation)
-- rgb to lab to rgb in kmeans
 - CPU usage
 - display output image properly like not half way ot of the screen ()
 - hide preview images (load w PIL.ImageTk ins. of cv2.imread)

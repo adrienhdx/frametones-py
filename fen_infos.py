@@ -66,4 +66,8 @@ class Fen_infos() :
     def charger_depuis_imdb(self, event) :
         pass
            
+    def creer_liste_infos(self) :
+        self.var_genre = self.listbox.get(self.listbox_genre.curselection()[0])
+        return [self.var_titre,self.var_real, self.var_date,self.var_genre]
+    
 app = Fen_infos()
