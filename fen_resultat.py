@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 class Fen_resultat() :
     def __init__(self,width_im,height_im,titre) :
         #Initialisation de la fenêtre
-        self.fen_resultat = tk.Tk()
+        self.fen_resultat = tk.Toplevel()
         # Attributs esthétiques
         self.fen_resultat.title('Résultat de votre traitement')
         self.fen_resultat.geometry('1000x700')
@@ -21,10 +21,10 @@ class Fen_resultat() :
         self.fen_resultat.mainloop()
 
     def creer_widgets(self, root) :
-        self.nom_image = ttk.Label(root, text = self.titre, font = 'Times New Roman 15')
-        self.nom_image.place(x = 900, y = 40)
-        self.canvas = tk.Canvas(root, bg = 'blue', width = self.width_im, height = self.height_im)
-        self.canvas.pack(side = tk.TOP)
+        self.nom_image = ttk.Label(root, text = self.titre, font = 'Arial 15')
+        self.nom_image.place(x = 400, y = 40)
+        self.canvas = tk.Canvas(root, bg = 'lightblue', width = self.width_im, height = self.height_im)
+        self.canvas.pack(tk.BOTTOM)
         
 
     def coller_image_resultat(self, img) :
