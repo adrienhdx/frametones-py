@@ -53,7 +53,7 @@ class MenuPrincipal() :
 
         # Source images
 
-        self.empty_preview = PhotoImage(file='resources/empty_preview.png')
+        self.rectangle_8 = PhotoImage(file='resources/Rectangle_8.png')
         self.handle = PhotoImage(file='resources/handle.png')
 
         # Lancement des fonctions
@@ -68,7 +68,7 @@ class MenuPrincipal() :
         self.projectname_header = ttk.Label(root, text = 'Projet algo S4', font='Arial 28 bold', style='white.TLabel')
         self.projectname_header.place(x=541, y=4)
 
-        self.projectversion_header = ttk.Label(root, text = 'version 1.0', font='Arial 18 italic', style='white.TLabel')
+        self.projectversion_header = ttk.Label(root, text = 'version 1.0', font='Arial 19 italic', style='white.TLabel')
         self.projectversion_header.place(x=575, y=48)
 
         # MIDDLE LEFT
@@ -88,7 +88,7 @@ class MenuPrincipal() :
         self.source_header = ttk.Label(root, text = 'Source', font='Arial 24 bold', style='white.TLabel')
         self.source_header.place(x=77, y=82)
 
-        self.selectfile_entry = ttk.Entry(root, width = 323, font='Arial 20', background='white')
+        self.selectfile_entry = ttk.Entry(root, width = 323, font='Arial 19', background='white')
         self.selectfile_entry.place(x=77, y=110)
         self.selectfile_entry.insert(INSERT, "Sélectionner un fichier source")
         self.selectfile_entry.configure(state='readonly')
@@ -108,13 +108,13 @@ class MenuPrincipal() :
         self.processing_header = ttk.Label(root, text = 'Paramètres de traitement', font='Arial 22 bold', style='white.TLabel')
         self.processing_header.place(x=77, y=274)
 
-        self.meanbands_radiobutton = ttk.Radiobutton(root, text = 'Moyenne RGB - Bandes', value=1, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
+        self.meanbands_radiobutton = Radiobutton(root, text = 'Moyenne RGB - Bandes', value=1, variable=self.mode, command=self.set_defaults, font='Arial 19')
         self.meanbands_radiobutton.place(x=77, y=315)
 
-        self.meancircle_radiobutton = ttk.Radiobutton(root, text = 'Moyenne RGB - Cercles', value=2, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
+        self.meancircle_radiobutton = Radiobutton(root, text = 'Moyenne RGB - Cercles', value=2, variable=self.mode, command=self.set_defaults,font='Arial 19')
         self.meancircle_radiobutton.place(x=77, y=362)
 
-        self.clusters_radiobutton = ttk.Radiobutton(root, text = 'Partitionnement', value=3, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
+        self.clusters_radiobutton = Radiobutton(root, text = 'Partitionnement', value=3, variable=self.mode, command=self.set_defaults, font='Arial 19')
         self.clusters_radiobutton.place(x=77, y=406)
 
         #self.fast_label = ttk.Label(root, text = 'Petite', font='Arial 9 italic', style='white.TLabel')
@@ -126,7 +126,7 @@ class MenuPrincipal() :
         #self.slow_label = ttk.Label(root, text = 'Grande', font='Arial 9 italic', style='white.TLabel')
         #self.slow_label.place(x=315, y=290)
 
-        self.quality_label = ttk.Label(root, text = 'Hauteur de l\'image', font='Arial 20', style='white.TLabel')
+        self.quality_label = ttk.Label(root, text = 'Hauteur de l\'image', font='Arial 19', style='white.TLabel')
         self.quality_label.place(x=155, y=526)
 
         # MIDDLE RIGHT
@@ -145,27 +145,27 @@ class MenuPrincipal() :
         self.videosettings_header = ttk.Label(root, text = 'Paramètres vidéo', font='Arial 24 bold', style='white.TLabel')
         self.videosettings_header.place(x=991, y=78)
 
-        self.leftimage_label = ttk.Label(root, text = 'Première image', font='Arial 20 italic', style='white.TLabel')
+        self.leftimage_label = ttk.Label(root, text = 'Première image', font='Arial 19 italic', style='white.TLabel')
         self.leftimage_label.place(x=534, y=110)
 
-        self.rightimage_label = ttk.Label(root, text = 'Dernière image', font='Arial 20 italic', style='white.TLabel')
+        self.rightimage_label = ttk.Label(root, text = 'Dernière image', font='Arial 19 italic', style='white.TLabel')
         self.rightimage_label.place(x=877, y=110)
 
-        self.leftimage_image = self.empty_preview
+        self.leftimage_image = self.rectangle_8
         self.leftimage_label = ttk.Label(root, image=self.leftimage_image)
         self.leftimage_label.place(x=534, y=167)
 
-        self.rightimage_image = self.empty_preview
+        self.rightimage_image = self.rectangle_8
         self.rightimage_label = ttk.Label(root, image=self.rightimage_image)
         self.rightimage_label.place(x=883, y=167)
 
         self.time_rangeslider = RangeSliderH(root, [self.start_frame_number, self.end_frame_number], Width=596, Height=45, padX=25, min_val=0, max_val=self.end_frame_number.get(), font_size=10,\
      line_s_color='black',line_color='black', bar_color_inner='white', bar_color_outer='black',  line_width=1, bar_radius=8, font_family='Arial', show_value=True,\
         valueSide='BOTTOM', digit_precision='.0f', imageL=self.handle, imageR=self.handle, auto=False)
-        self.time_rangeslider.place(x=578, y=355)
+        self.time_rangeslider.place(x=578, y=380)
 
-        self.refresh_button = ttk.Button(root, text = 'Actualiser', width=20, command=self.refresh_preview)
-        self.refresh_button.place(x=784, y=400)
+        self.refresh_button = Button(root, text = 'Actualiser', width=10, command=self.refresh_preview, font ='Arial 19')
+        self.refresh_button.place(x=784, y=410)
 
         #self.large_label = ttk.Label(root, text = 'Gros', font='Arial 9 italic', style='white.TLabel')
         #self.large_label.place(x=400, y=290)
@@ -176,8 +176,8 @@ class MenuPrincipal() :
         #self.thin_label = ttk.Label(root, text = 'Fin', font='Arial 9 italic', style='white.TLabel')
         #self.thin_label.place(x=628, y=290)
 
-        self.imagesperhour_label = ttk.Label(root, text = 'Images à traiter', font='Arial 15', style='white.TLabel')
-        self.imagesperhour_label.place(x=612, y=475)
+        self.imagesperhour_label = ttk.Label(root, text = 'Images à traiter', font='Arial 19', style='white.TLabel')
+        self.imagesperhour_label.place(x=800, y=526)
 
 
         # BOTTOM
@@ -186,7 +186,7 @@ class MenuPrincipal() :
         # Barre de progression (progressbar)
         # images traitées (text)
 
-        self.begin_button = ttk.Button(root, text = 'Démarrer le traitement', width=40, command=self.process_film)
+        self.begin_button = Button(root, text = 'Démarrer le traitement', width=30, command=self.process_film, font ='Arial 19')
         self.begin_button.place(x=422, y=584)
 
         self.progressbar = ttk.Progressbar(root, orient=HORIZONTAL, length=1126, mode='determinate', maximum=self.frame_count.get(), variable=self.progress)
@@ -195,7 +195,7 @@ class MenuPrincipal() :
         '''self.info_text = Text(root, width=69, height=2, font='Arial 10', state="disabled")
         self.info_text.place(x=73, y=420)'''
 
-        self.usage_text=  Text(root, width=11, height=1, font='Arial 15', state="disabled")
+        self.usage_text=  Text(root, width=11, height=1, font='Arial 19', state="disabled")
         self.usage_text.place(x=870, y=584)
         self.write_info(self.usage_text, 'En attente ...') 
 
