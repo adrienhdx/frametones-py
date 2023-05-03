@@ -467,7 +467,7 @@ class MenuPrincipal() :
             self.usage_text.update()
     
     def open_info_window(self) :
-        self.fen_info = tk.Fen_info()
+        self.fen_info = ttk.Fen_info()
         self.fen_infos.creer_widgets(MenuPrincipal())
         self.titre = self.fen_infos.creer_liste_infos()[0]
 
