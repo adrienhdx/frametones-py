@@ -1,19 +1,7 @@
 import numpy as np
 import cv2 #pip install opencv-python
-import matplotlib.pyplot as plt
 import colorsys
 import time
-import os
-import tkinter as tk
-#from skimage import io, color
-
-# Video Color Analysis (ViCoSIS) Utilities
-# this file will hold all color analysis functions as well as other practicalities
-
-#   TODO :
-#   - color palette extraction with priority to the most dominant colors and not bullshit random heights
-#   - GUI (tkinter)
-#
 
 """
 Pour ouvrir un dossier ou un fichier dans l'explorateur de fichier :

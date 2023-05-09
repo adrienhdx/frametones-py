@@ -3,17 +3,21 @@ import cv2 #pip install opencv-python
 import os
 import utils
 import time
+from windows import InfoWindow, ResultsWindow
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from RangeSlider import RangeSliderH
 import numpy as np
 import psutil #pip install psutil
+from PIL import Image, ImageTk #pip install pillow
 
 class MenuPrincipal() :
     def __init__(self) :
         # Initialisation de la fenêtre racine
         self.root = Tk()
+        self.resultsWindow = None
+        self.infoWindow = None
 
         # fond blanc
         self.root.configure(bg='white')
@@ -25,6 +29,7 @@ class MenuPrincipal() :
         # Film info
 
         self.film_path = ""
+        self.out_path = ""
         self.n_film_frames = -1
         self.source = None
 
@@ -186,7 +191,7 @@ class MenuPrincipal() :
         # Barre de progression (progressbar)
         # images traitées (text)
 
-        self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command=self.process_film)
+        self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command=self.begin)
         self.begin_button.place(x=300, y=350)
 
         self.progressbar = ttk.Progressbar(root, orient=HORIZONTAL, length=574, mode='determinate', maximum=self.frame_count.get(), variable=self.progress)
@@ -213,10 +218,13 @@ class MenuPrincipal() :
 
         self.delete_all_info(self.info_text)
         self.write_info(self.info_text, 'Fichier vidéo chargé : ' + self.film_path + '\n')
+        
 
         # get relevant file info
         self.source = cv2.VideoCapture(self.film_path)
         self.n_film_frames = int(self.source.get(cv2.CAP_PROP_FRAME_COUNT))
+        film_resolution = (int(self.source.get(cv2.CAP_PROP_FRAME_WIDTH)), int(self.source.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        self.write_info(self.info_text, f"Résolution : {film_resolution[0]}x{film_resolution[1]}\n")
 
         # update slider
         self.time_rangeslider.max_val=self.n_film_frames
@@ -364,20 +372,27 @@ class MenuPrincipal() :
 
         return output_image
     
-    def process_film(self):
+    def begin(self):
         if self.film_path == "":
             self.write_info(self.info_text, "Erreur : Aucun fichier vidéo chargé\n")
             return
 
-        out_path = filedialog.askdirectory(title = "Choisir un dossier de destination", mustexist=True, initialdir=os.path.expanduser('~\Videos'))
+        self.process_film()
+        self.open_info_window()
 
-        if out_path == "":
+    def open_info_window(self):
+        self.infoWindow = InfoWindow(self.root, self.out_path)
+
+    def process_film(self):
+        self.out_path = filedialog.askdirectory(title = "Choisir un dossier de destination", mustexist=True, initialdir=os.path.expanduser('~\Videos'))
+
+        if self.out_path == "":
             self.write_info(self.info_text, "Erreur : Aucun dossier de destination sélectionné\n")
             return
         
         self.disable_all()
 
-        os.chdir(out_path)
+        os.chdir(self.out_path)
 
         self.frame_step = (self.end_frame_number.get() - self.start_frame_number.get()) // self.frame_count.get()
         self.progressbar.config(maximum=self.frame_count.get())
@@ -401,16 +416,19 @@ class MenuPrincipal() :
                 output_image = self.process_kmeans()
 
 
-        cv2.imwrite(f"output_image.jpg", output_image)
+        cv2.imwrite(f"output_image.png", output_image)
 
         self.delete_all_info(self.info_text)
-        self.write_info(self.info_text, f"Image enregistrée dans {out_path}\n")
+        self.write_info(self.info_text, f"Image enregistrée dans {self.out_path}\n")
         self.write_info(self.info_text, f"Temps de traitement : {time.time()-start_time:.1f}s\n")
 
-        # display image
-        cv2.imshow("output", output_image)
+        # display image (crude)
+        """cv2.imshow("output", output_image)
         cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        cv2.destroyAllWindows()"""
+
+        # TODO : open results window (formerly open_window(), to be removed)
+        self.resultsWindow = ResultsWindow(self.root)
         
         self.enable_all()
         self.reset_vars()     
@@ -426,6 +444,45 @@ class MenuPrincipal() :
         self.refresh_button.config(state='disabled')
         self.output_height_slider.config(state='disabled')
         self.imagecount_slider.config(state='disabled')
+
+    def open_window(self, output_image, path):
+        
+        """
+        blue,green,red = cv2.split(img)
+        img = cv2.merge((red,green,blue))
+        im = Image.fromarray(img)
+        imgtk = ImageTk.PhotoImage(image=im)
+        """ 
+
+        self.output_image_window = Toplevel(self.root)
+        self.output_image_window.configure(bg='white')
+        self.output_image_window.title("Output image")
+        self.output_image_window.geometry(f"720x480")
+
+        self.img = PhotoImage(file=f'{path}/output_image.png')
+        # Resize image width to maximum 720px
+        self.img = self.img.zoom(480//self.img.height())
+        #self.img = cv2.resize(self.img, (720, 480))
+
+        self.output_image_title = ttk.Label(self.output_image_window, text = 'Résultats', font='Arial 13 bold', style='white.TLabel')
+        self.output_image_title.pack()
+
+        # titre du film
+        film_name = os.path.split(self.film_path)[1].split('.')[0]
+        self.output_image_film_title = ttk.Label(self.output_image_window, text = f'Film : {film_name}', font='Arial 10 bold', style='white.TLabel')
+        self.output_image_film_title.pack()
+
+        # Réalisateur
+        self.output_image_director = ttk.Label(self.output_image_window, text = f'Réalisateur : Youssef Guermazi', font='Arial 10 bold', style='white.TLabel')
+        self.output_image_director.pack()
+
+        # Année
+        self.output_image_year = ttk.Label(self.output_image_window, text = f'Année : 2023', font='Arial 10 bold', style='white.TLabel')
+        self.output_image_year.pack()
+
+        # Image
+        self.output_image_display = Label(self.output_image_window, image=self.img)
+        self.output_image_display.pack()
 
     def enable_all(self):
         # enable everything after processing
@@ -443,6 +500,9 @@ class MenuPrincipal() :
         # reset variables
         # dunno what to add there
         self.progress.set(0)
+        self.delete_all_info(self.usage_text)
+        self.write_info(self.usage_text, 'En attente\n')
+        self.write_info(self.usage_text, '...\n') 
 
     def log_progress(self, i, start_time):
             # notify progress
@@ -460,7 +520,5 @@ class MenuPrincipal() :
             self.info_text.update()
             self.usage_text.update()
     
-
     
-
 app = MenuPrincipal()
