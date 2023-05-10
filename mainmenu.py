@@ -35,7 +35,7 @@ class MenuPrincipal() :
 
         # Processor settings
 
-        self.output_height = IntVar(value=128)
+        self.output_height = IntVar(value=300)
 
         self.highres = IntVar(value=0)
 
@@ -44,7 +44,7 @@ class MenuPrincipal() :
         self.start_frame_number = IntVar(value=0)
         self.end_frame_number = IntVar(value=340000)
 
-        self.frame_count = IntVar(value=150)
+        self.frame_count = IntVar(value=1500)
 
         self.progress = IntVar(value=0)
 
