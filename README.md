@@ -1,6 +1,9 @@
 # Projet Algo S4
 
-Video Color Analysis : a Python library implementing various computer vision methods to analyse the color profile of a video over time.
+A Python program implementing various computer vision algorithms to analyse the color profile of a video over time.
+Written as a programming project at INSA Lyon
+Results from the program can be seen here : https://theslippypenguin.github.io/frametones/
+(Associated respository : https://github.com/TheSlippyPenguin/frametones)
 
 ## Major upcoming tasks
 
