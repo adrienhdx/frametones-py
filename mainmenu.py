@@ -125,7 +125,6 @@ class MenuPrincipal() :
         #self.fast_label = ttk.Label(root, text = 'Petite', font='Arial 9 italic', style='white.TLabel')
         #self.fast_label.place(x=73, y=290)
 
-        self.output_height_slider = Scale(root, from_=100, to=1000, resolution=10, orient=HORIZONTAL, length=250, variable=self.output_height, background='white')
         self.output_height_slider.place(x=73, y=270)
 
         #self.slow_label = ttk.Label(root, text = 'Grande', font='Arial 9 italic', style='white.TLabel')
@@ -311,7 +310,6 @@ class MenuPrincipal() :
             output_image = np.zeros((height, frame_count, 3), np.uint8)
 
             for i in range(frame_count):
-                frame_start_time = time.time()
 
                 self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
                 frame = self.source.read()[1]
@@ -324,8 +322,8 @@ class MenuPrincipal() :
                 self.log_progress(i)
         else:
             
-            # fix aspect ratio to 16/9
-            aspect = 1.7777777777777777    
+            # fix aspect ratio to sqrt(2)
+            aspect = 2**0.5    
 
             output_width = int(height / aspect)   
 
@@ -338,7 +336,6 @@ class MenuPrincipal() :
 
             # get color list
             for i in range(frame_count):
-                frame_start_time = time.time()
 
                 self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
                 frame = self.source.read()[1]
@@ -361,7 +358,6 @@ class MenuPrincipal() :
         output_image = np.zeros((height+4, frame_count, 3), np.uint8)
 
         for i in range(frame_count):
-            frame_start_time = time.time()
 
             self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get() + (i*self.frame_step) )
             frame = self.source.read()[1]
