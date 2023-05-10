@@ -5,21 +5,23 @@ from tkinter import ttk
 from tkinter import filedialog
 import os
 import json
+from PIL import Image, ImageTk
 
 
 class InfoWindow() :
     def __init__(self, master, out_path) :
         #Initialisation de la fenêtre
-        self.window = Toplevel(master)
+        self.master = master
+        self.window = Toplevel(self.master)
         # Attributs esthétiques
         self.window.title('Informations du fichier chargé')
         self.window.geometry('235x290')
         self.window.configure(bg = 'white')
         # Lancement du gestionnaire d'évènement 
-        self.creer_widgets(self.window)
-        self.window.mainloop()
         self.db_path = ""
         self.out_path = out_path
+        self.creer_widgets(self.window)
+        self.window.mainloop()
 
     def creer_widgets(self, root) :
         # Box contenant les zones d'entrées
@@ -72,7 +74,7 @@ class InfoWindow() :
             return
     
         self.charger_fichier()
-    
+
     def charger_fichier(self):
         #   Tout est valide, on peut charger le fichier
         with open(self.db_path, 'r') as db_file :
@@ -84,9 +86,7 @@ class InfoWindow() :
         for film in films_in_db :
             if film == self.var_titre.get():
                 # display error message asking the user if he wants to overwrite
-                proceed = True
-                if not proceed : return
-                print("ERROR FILM IN DB")
+                self.texte.configure(text = 'Le film est déjà dans la base de données. \n il n\'est pas possible de l\'ajouter.')
                 return
             
         #   ajouter le film à la base de données
@@ -94,7 +94,8 @@ class InfoWindow() :
         film_object = {
             "title": self.var_titre.get(),
             "year": self.var_annee.get(),
-            "director": self.var_real.get()
+            "director": self.var_real.get(),
+            "img_name": self.out_path + "/output_image.png"
         }
 
         db.append(film_object)
@@ -104,57 +105,102 @@ class InfoWindow() :
         with open(self.db_path, 'w') as f:
             f.write(new_db)
 
+        ResultsWindow(self.master, self.db_path)
+
         self.window.destroy()
 
-        
-# TODO : load info from json
 
 class ResultsWindow():
-        """
-        blue,green,red = cv2.split(img)
-        img = cv2.merge((red,green,blue))
-        im = Image.fromarray(img)
-        imgtk = ImageTk.PhotoImage(image=im)
-        """ 
-        def __init__(self, master) -> None:
-            # path is json database where info was written
+        def __init__(self, master, path) -> None:
 
             self.window = Toplevel(master)
             self.window.configure(bg='white')
             self.window.title("Résultats")
-            self.window.geometry(f"720x480")
-            """self.img = PhotoImage(file=f'{path}/output_image.png')
-            # Resize image width to maximum 720px
-            self.img = self.img.zoom(480//self.img.height())
-            #self.img = cv2.resize(self.img, (720, 480))"""
-            self.create_widgets()
+            self.window.geometry(f"720x420")
+            self.window.resizable(False, False)
+
+            self.film_name=''
+            self.director_name=''
+            self.year=''
+            self.img_path=''
+            self.img=None
+
+            self.create_widgets(path)
         
-        def create_widgets(self):
+        def create_widgets(self, path):
+            # load info from json
+            with open(path, 'r') as db_file :
+                db = json.load(db_file)
+
+            # get last film
+            film = db[-1]
+            self.film_name = film['title']
+            self.director_name = film['director']
+            self.year = film['year']
+            self.img_path = film['img_name']
+            self.img = PhotoImage(file=self.img_path, master=self.window)
+            
+            # Zoom image to fit window if it's too small
+            if self.img.width()< 700 and self.img.height()< 400:
+                if self.img.width()< self.img.height():
+                    zoom_factor = 400//self.img.height()
+                    self.img = self.img.zoom(zoom_factor)
+                else:
+                    zoom_factor = 600//self.img.width()
+                    self.img = self.img.zoom(zoom_factor)
+            # dezoom if too big
+            elif self.img.width()> 700 or self.img.height()> 400:
+                if self.img.width()> self.img.height():
+                    zoom_factor = self.img.width()//600
+                    print(zoom_factor)
+                    self.img = self.img.subsample(zoom_factor)
+                else:
+                    zoom_factor = self.img.height()//400
+                    print(zoom_factor)
+                    self.img = self.img.subsample(zoom_factor)
+            
+            # Resize window height
+            self.window.geometry(f"720x{self.img.height()+150}")
+
+
+            # Labels
             self.output_image_title = ttk.Label(self.window, text = 'Résultats', font='Arial 13 bold', style='white.TLabel')
             self.output_image_title.pack()
 
             # titre du film
-            film_name = ""#os.path.split(self.film_path)[1].split('.')[0]
-            self.output_image_film_title = ttk.Label(self.window, text = f'Film : {film_name}', font='Arial 10 bold', style='white.TLabel')
+            self.output_image_film_title = ttk.Label(self.window, text = f'Film : {self.film_name}', font='Arial 10', style='white.TLabel')
             self.output_image_film_title.pack()
 
             # Réalisateur
-            self.output_image_director = ttk.Label(self.window, text = f'Réalisateur : Youssef Guermazi', font='Arial 10 bold', style='white.TLabel')
+            self.output_image_director = ttk.Label(self.window, text = f'Réalisateur : {self.director_name}', font='Arial 10', style='white.TLabel')
             self.output_image_director.pack()
 
             # Année
-            self.output_image_year = ttk.Label(self.window, text = f'Année : 2023', font='Arial 10 bold', style='white.TLabel')
+            self.output_image_year = ttk.Label(self.window, text = f'Année : {self.year}', font='Arial 10', style='white.TLabel')
             self.output_image_year.pack()
 
             # Image
-            """self.output_image_display = Label(self.window, image=self.img)
-            self.output_image_display.pack()"""
-            
-         
-if __name__ == '__main__':
+            self.output_image_display = tk.Label(self.window, image=self.img)
+            self.output_image_display.pack()
+            # Evil GC hack
+            self.output_image_display.image = self.img
+
+            # Bouton Ouvrir avec Photos
+            self.output_image_display_button = ttk.Button(self.window, text = 'Ouvrir avec Photos', command=self.open_folder)
+            self.output_image_display_button.pack()
+
+            # Bouton Retour
+            self.output_image_display_button = ttk.Button(self.window, text = 'Retour', command=self.window.destroy)
+            self.output_image_display_button.pack()
+
+        def open_folder(self):
+            os.startfile(self.img_path)
+
+
+if __name__ == "__main__":
     root = tk.Tk()
-    root.title('Informations du fichier chargé')
-    root.geometry('10x10')
-    root.configure(bg = 'white')
-    ResultsWindow(root)
+    root.title("Ajouter un film")
+    root.geometry("10x10")
+    root.configure(bg='white')
+    app = ResultsWindow(root, 'db2.json')
     root.mainloop()

@@ -175,7 +175,7 @@ class MenuPrincipal() :
         #self.large_label = ttk.Label(root, text = 'Gros', font='Arial 9 italic', style='white.TLabel')
         #self.large_label.place(x=400, y=290)
 
-        self.imagecount_slider = Scale(root, from_=10, to=2500, resolution=10, orient=HORIZONTAL, length=250, variable=self.frame_count, background='white')
+        self.imagecount_slider = Scale(root, from_=100, to=2500, resolution=10, orient=HORIZONTAL, length=250, variable=self.frame_count, background='white')
         self.imagecount_slider.place(x=400, y=270)
 
         #self.thin_label = ttk.Label(root, text = 'Fin', font='Arial 9 italic', style='white.TLabel')
@@ -239,19 +239,20 @@ class MenuPrincipal() :
         
         # get the first image at the start time
         self.source.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame_number.get())
-        print(self.start_frame_number.get())
         start_frame = self.source.read()[1]
         start_frame = cv2.resize(start_frame, (120, 60))
 
         # get the last image at the end time
         self.source.set(cv2.CAP_PROP_POS_FRAMES, self.end_frame_number.get()-1)
-        print(self.end_frame_number.get())
         end_frame = self.source.read()[1]
         end_frame = cv2.resize(end_frame, (120, 60))
 
         # write images as files
-        cv2.imwrite('resources/start_frame.png', start_frame)
-        cv2.imwrite('resources/end_frame.png', end_frame)
+        # TODO : fix "no such file or directory" error
+        folder_path = os.getcwd()
+        print(folder_path)
+        cv2.imwrite(folder_path+'/resources/start_frame.png', start_frame)
+        cv2.imwrite(folder_path+'/resources/end_frame.png', end_frame)
         # update the images
         self.leftimage_image = PhotoImage(file='resources/start_frame.png')
         self.rightimage_image = PhotoImage(file='resources/end_frame.png')
@@ -320,7 +321,7 @@ class MenuPrincipal() :
 
                 output_image[:, i] = utils.avg_strip_RGB(frame)  #average_frame_color_HSV(frame)
 
-                self.log_progress(i, frame_start_time)
+                self.log_progress(i)
         else:
             
             # fix aspect ratio to 16/9
@@ -346,7 +347,7 @@ class MenuPrincipal() :
 
                 colors.append(utils.avg_strip_RGB(frame))  #average_frame_color_HSV(frame)
             
-                self.log_progress(i, frame_start_time)
+                self.log_progress(i)
 
             # create circles for every color
             for i in reversed(range(frame_count)):
@@ -366,7 +367,7 @@ class MenuPrincipal() :
             frame = self.source.read()[1]
             output_image[:, i] = utils.kmeans_strip(image=frame, color_count=7, strip_height=height+4, compress=bool(self.highres.get()))[:, 0]
 
-            self.log_progress(i, frame_start_time)
+            self.log_progress(i)
 
         output_image = output_image[4:, :, :]
 
@@ -376,19 +377,20 @@ class MenuPrincipal() :
         if self.film_path == "":
             self.write_info(self.info_text, "Erreur : Aucun fichier vidéo chargé\n")
             return
+    
+        self.out_path = filedialog.askdirectory(title = "Choisir un dossier de destination", mustexist=True, initialdir=os.path.expanduser('~\Videos'))
+
+        if self.out_path == "":
+            self.write_info(self.info_text, "Erreur : Aucun dossier de destination sélectionné\n")
+            return
 
         self.process_film()
         self.open_info_window()
 
     def open_info_window(self):
         self.infoWindow = InfoWindow(self.root, self.out_path)
-
+        
     def process_film(self):
-        self.out_path = filedialog.askdirectory(title = "Choisir un dossier de destination", mustexist=True, initialdir=os.path.expanduser('~\Videos'))
-
-        if self.out_path == "":
-            self.write_info(self.info_text, "Erreur : Aucun dossier de destination sélectionné\n")
-            return
         
         self.disable_all()
 
@@ -415,20 +417,11 @@ class MenuPrincipal() :
                 # paramètres bancals
                 output_image = self.process_kmeans()
 
-
         cv2.imwrite(f"output_image.png", output_image)
 
         self.delete_all_info(self.info_text)
         self.write_info(self.info_text, f"Image enregistrée dans {self.out_path}\n")
         self.write_info(self.info_text, f"Temps de traitement : {time.time()-start_time:.1f}s\n")
-
-        # display image (crude)
-        """cv2.imshow("output", output_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()"""
-
-        # TODO : open results window (formerly open_window(), to be removed)
-        self.resultsWindow = ResultsWindow(self.root)
         
         self.enable_all()
         self.reset_vars()     
@@ -444,45 +437,6 @@ class MenuPrincipal() :
         self.refresh_button.config(state='disabled')
         self.output_height_slider.config(state='disabled')
         self.imagecount_slider.config(state='disabled')
-
-    def open_window(self, output_image, path):
-        
-        """
-        blue,green,red = cv2.split(img)
-        img = cv2.merge((red,green,blue))
-        im = Image.fromarray(img)
-        imgtk = ImageTk.PhotoImage(image=im)
-        """ 
-
-        self.output_image_window = Toplevel(self.root)
-        self.output_image_window.configure(bg='white')
-        self.output_image_window.title("Output image")
-        self.output_image_window.geometry(f"720x480")
-
-        self.img = PhotoImage(file=f'{path}/output_image.png')
-        # Resize image width to maximum 720px
-        self.img = self.img.zoom(480//self.img.height())
-        #self.img = cv2.resize(self.img, (720, 480))
-
-        self.output_image_title = ttk.Label(self.output_image_window, text = 'Résultats', font='Arial 13 bold', style='white.TLabel')
-        self.output_image_title.pack()
-
-        # titre du film
-        film_name = os.path.split(self.film_path)[1].split('.')[0]
-        self.output_image_film_title = ttk.Label(self.output_image_window, text = f'Film : {film_name}', font='Arial 10 bold', style='white.TLabel')
-        self.output_image_film_title.pack()
-
-        # Réalisateur
-        self.output_image_director = ttk.Label(self.output_image_window, text = f'Réalisateur : Youssef Guermazi', font='Arial 10 bold', style='white.TLabel')
-        self.output_image_director.pack()
-
-        # Année
-        self.output_image_year = ttk.Label(self.output_image_window, text = f'Année : 2023', font='Arial 10 bold', style='white.TLabel')
-        self.output_image_year.pack()
-
-        # Image
-        self.output_image_display = Label(self.output_image_window, image=self.img)
-        self.output_image_display.pack()
 
     def enable_all(self):
         # enable everything after processing
@@ -504,17 +458,14 @@ class MenuPrincipal() :
         self.write_info(self.usage_text, 'En attente\n')
         self.write_info(self.usage_text, '...\n') 
 
-    def log_progress(self, i, start_time):
+    def log_progress(self, frame):
             # notify progress
-            self.progress.set(i+1)
+            self.progress.set(frame+1)
             self.delete_all_info(self.info_text)
             self.delete_all_info(self.usage_text)
 
-            self.write_info(self.info_text, f"Image {i+1}/{self.frame_count.get()} traitée\n")
-            #self.write_info(self.info_text, f"FPS: {1/(time.time()-start_time):.1f}\n")
-
+            self.write_info(self.info_text, f"Image {frame+1}/{self.frame_count.get()} traitée\n")
             self.write_info(self.usage_text, f"RAM: {psutil.virtual_memory()[2]}%\n")
-            #self.write_info(self.usage_text, f"CPU: {cpu_usage}%\n")
 
             self.progressbar.update()
             self.info_text.update()
