@@ -1,11 +1,163 @@
-{
-    "movies": [
-      {
-        "title": "The Shawshank Redemption",
-        "year": 1994,
-        "director": "Frank Darabont",
-        "genre": "Drama",
-        "palette": "/palettes/the_shawshank_redemption.jpg"
-      }
-    ]
-}
+[
+  {
+      "title": "2001: A Space Odyssey",
+      "year": "1968",
+      "director": "Stanley Kubrick",
+      "img_name": "2001-A-Space-Odyssey-(1968).jpg",
+      "avg_name": "2001-A-Space-Odyssey-(1968).png"
+  },
+  {
+      "title": "1917",
+      "year": "2019",
+      "director": "Sam Mendes",
+      "img_name": "1917-(2019).jpg",
+      "avg_name": "1917-(2019).png"
+  },
+  {
+      "title": "Avatar",
+      "year": "2009",
+      "director": "James Cameron",
+      "img_name": "Avatar-(2009).jpg",
+      "avg_name": "Avatar-(2009).png"
+  },
+  {
+      "title": "Avatar: The Way of Water",
+      "year": "2022",
+      "director": "James Cameron",
+      "img_name": "Avatar-The-Way-of-Water-(2022).jpg",
+      "avg_name": "Avatar-The-Way-of-Water-(2022).png"
+  },
+  {
+      "title": "Blade Runner 2049",
+      "year": "2017",
+      "director": "Denis Villeneuve",
+      "img_name": "Blade-Runner-2049-(2017).jpg",
+      "avg_name": "Blade-Runner-2049-(2017).png"
+  },
+  {
+      "title": "Coco",
+      "year": "2017", 
+      "director": "Lee Unkrich",
+      "img_name": "Coco-(2017).jpg",
+      "avg_name": "Coco-(2017).png"
+  },
+  {
+      "title": "Dune",
+      "year": "2021",
+      "director": "Denis Villeneuve",
+      "img_name": "Dune-(2021).jpg",
+      "avg_name": "Dune-(2021).png"
+  },
+  {
+      "title": "Encanto",
+      "year": "2021",
+      "director": "Byron Howard",
+      "img_name": "Encanto-(2021).jpg",
+      "avg_name": "Encanto-(2021).png"
+  },
+  {
+      "title": "Interstellar",
+      "year": "2014",
+      "director": "Christopher Nolan",
+      "img_name": "Interstellar-(2014).jpg",
+      "avg_name": "Interstellar-(2014).png"
+  },
+  {
+      "title": "Kung Fu Panda",
+      "year": "2008",
+      "director": "Mark Osborne",
+      "img_name": "Kung-Fu-Panda-(2008).jpg",
+      "avg_name": "Kung-Fu-Panda-(2008).png"
+  },
+  {
+      "title": "Kung Fu Panda 2",
+      "year": "2011",
+      "director": "Jennifer Yuh",
+      "img_name": "Kung-Fu-Panda-2-(2011).jpg",
+      "avg_name": "Kung-Fu-Panda-2-(2011).png"
+  },
+  {
+      "title": "La Folle Histoire de Max et Léon",
+      "year": "2016",
+      "director": "Johnatan Barré",
+      "img_name": "La-Folle-Histoire-de-Max-et-Leon-(2016).jpg",
+      "avg_name": "La-Folle-Histoire-de-Max-et-Leon-(2016).png"
+  },
+  {
+      "title": "Life of Pi",
+      "year": "2012",
+      "director": "Ang Lee",
+      "img_name": "Life-of-Pi-(2012).jpg",
+      "avg_name": "Life-of-Pi-(2012).png"
+  },
+  {
+      "title": "Mad Max: Fury Road",
+      "year": "2015",
+      "director": "George Miller",
+      "img_name": "Mad-Max-Fury-Road-(2015).jpg",
+      "avg_name": "Mad-Max-Fury-Road-(2015).png"
+  },
+  {
+      "title": "Madagascar",
+      "year": "2005",
+      "director": "Eric Darnell",
+      "img_name": "Madagascar-(2005).jpg",
+      "avg_name": "Madagascar-(2005).png"
+  },
+  {
+      "title": "Monsters, Inc.",
+      "year": "2001",
+      "director": "Pete Docter",
+      "img_name": "Monsters-Inc-(2001).jpg",
+      "avg_name": "Monsters-Inc-(2001).png"
+  },
+  {
+      "title": "Moonrise Kingdom",
+      "year": "2012",
+      "director": "Wes Anderson",
+      "img_name": "Moonrise-Kingdom-(2012).jpg",
+      "avg_name": "Moonrise-Kingdom-(2012).png"
+  },
+  {
+      "title": "Puss in boots 2",
+      "year": "2022",
+      "director": "Joel Crawford",
+      "img_name": "Puss-in-boots-2-(2022).jpg",
+      "avg_name": "Puss-in-boots-2-(2022).png"
+  },
+  {
+      "title": "Shrek",
+      "year": "2001",
+      "director": "Andrew Adamson",
+      "img_name": "Shrek-(2001).jpg",
+      "avg_name": "Shrek-(2001).png"
+  },
+  {
+      "title": "Shrek 2",
+      "year": "2004",
+      "director": "Andrew Adamson",
+      "img_name": "Shrek-2-(2004).jpg",
+      "avg_name": "Shrek-2-(2004).png"
+  },
+  {
+      "title": "The Banshees of Inisherin",
+      "year": "2022",
+      "director": "Martin McDonagh",
+      "img_name": "The-Banshees-of-Inisherin-(2022).jpg",
+      "avg_name": "The-Banshees-of-Inisherin-(2022).png"
+  },
+  {
+      "title": "The Lion King",
+      "year": "1994",
+      "director": "Bob Minkoff",
+      "img_name": "The-Lion-King-(1994).jpg",
+      "avg_name": "The-Lion-King-(1994).png"
+  },
+  {
+      "title": "The Matrix",
+      "year": "1999",
+      "director": "The Wachowski Brothers",
+      "img_name": "The-Matrix-(1999).jpg",
+      "avg_name": "The-Matrix-(1999).png"
+  }
+]

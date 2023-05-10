@@ -1,8 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
 
-
-
 class RangeSliderH(Frame):
     LINE_COLOR = "#476b6b"
     LINE_S_COLOR="#0a50ff"
