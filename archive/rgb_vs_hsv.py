@@ -1,7 +1,8 @@
 import utils
 import cv2
-import numpy as np
 import time
+
+# just testing which technique is faster
 
 img_path = r"C:\Users\adrhd\Pictures\bato\_MG_7493.JPG"
 
