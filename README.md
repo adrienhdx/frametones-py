@@ -15,6 +15,5 @@ Results from the program can be seen here : https://theslippypenguin.github.io/f
 
 ## Fixes
 
-- images on website front page not displayed
 - no such file or directory when refreshing after processing a film
 
