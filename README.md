@@ -7,13 +7,9 @@ Results from the program can be seen here : https://theslippypenguin.github.io/f
 
 ## Major upcoming tasks
 
-- readme.txt
-- PDF explicatif
-- docstrings
-- vidéo de démo
-- code cleanup
-
-## Fixes
-
-- no such file or directory when refreshing after processing a film
+- readme.txt (TODO Youssef)
+- PDF explicatif (TODO Adrien)
+- docstrings (TODO Albane)
+- vidéo de démo (TODO Axelle)
+- code cleanup (TODO Adrien)
 
