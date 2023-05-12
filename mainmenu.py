@@ -18,6 +18,7 @@ class MenuPrincipal() :
         self.root = Tk()
         self.resultsWindow = None
         self.infoWindow = None
+        self.folder_path = os.getcwd()
 
         # fond blanc
         self.root.configure(bg='white')
@@ -36,6 +37,7 @@ class MenuPrincipal() :
         # Processor settings
 
         self.output_height = IntVar(value=300)
+        self.frame_count = IntVar(value=1500)
 
         self.highres = IntVar(value=0)
 
@@ -43,8 +45,6 @@ class MenuPrincipal() :
 
         self.start_frame_number = IntVar(value=0)
         self.end_frame_number = IntVar(value=340000)
-
-        self.frame_count = IntVar(value=1500)
 
         self.progress = IntVar(value=0)
 
@@ -67,8 +67,6 @@ class MenuPrincipal() :
 
     def creer_widgets(self, root):
         # TOP
-        # Projet algo S4 (header)
-        # version 1.0 (header)
 
         self.projectname_header = ttk.Label(root, text = 'Projet algo S4', font='Arial 13 bold', style='white.TLabel')
         self.projectname_header.place(x=304, y=10)
@@ -77,18 +75,6 @@ class MenuPrincipal() :
         self.projectversion_header.place(x=322, y=30)
 
         # MIDDLE LEFT
-        # Source (header)
-        # Sélectionner fichier (Entry to display filename)
-        # Sélectionner fichier (Button to open file explorer)
-        # Haute résolution (checkbox)
-        # Haute résolution (label)
-        # Explication haute résolution (label)
-        # Paramètres de traitement (header)
-        # Couleur moyenne par image - bandes (radio button)
-        # Couleur moyenne par image - circulaire (radio button)
-        # Couleurs par clusters (radio button)
-        # curseur qualité (slider)
-        # Qualité (label)
 
         self.source_header = ttk.Label(root, text = 'Source', font='Arial 11 bold', style='white.TLabel')
         self.source_header.place(x=73, y=70)
@@ -122,29 +108,13 @@ class MenuPrincipal() :
         self.clusters_radiobutton = ttk.Radiobutton(root, text = 'Couleurs par clusters', value=3, variable=self.mode, style='white.TRadiobutton', command=self.set_defaults)
         self.clusters_radiobutton.place(x=73, y=241)
 
-        #self.fast_label = ttk.Label(root, text = 'Petite', font='Arial 9 italic', style='white.TLabel')
-        #self.fast_label.place(x=73, y=290)
-
+        self.output_height_slider = Scale(root, from_=100, to=1000, resolution=10, background='white', variable=self.output_height, orient=HORIZONTAL, length=250)
         self.output_height_slider.place(x=73, y=270)
-
-        #self.slow_label = ttk.Label(root, text = 'Grande', font='Arial 9 italic', style='white.TLabel')
-        #self.slow_label.place(x=315, y=290)
 
         self.quality_label = ttk.Label(root, text = 'Hauteur de l\'image', font='Arial 10', style='white.TLabel')
         self.quality_label.place(x=150, y=310)
 
         # MIDDLE RIGHT
-        # Paramètres vidéo (header)
-        # Image gauche (label)
-        # Image droite (label)
-        # Image gauche (image)
-        # Image droite (image)
-        # Temps (range slider)
-        # Temps gauche (label)
-        # Temps droite (label) OU utiliser les labels du range slider directement
-        # Actualiser (button)
-        # curseur images par heure (slider)
-        # Images par heure (label)
 
         self.videosettings_header = ttk.Label(root, text = 'Paramètres vidéo', font='Arial 11 bold', style='white.TLabel')
         self.videosettings_header.place(x=400, y=70)
@@ -171,24 +141,14 @@ class MenuPrincipal() :
         self.refresh_button = ttk.Button(root, text = 'Actualiser', width=10, command=self.refresh_preview)
         self.refresh_button.place(x=400, y=225)
 
-        #self.large_label = ttk.Label(root, text = 'Gros', font='Arial 9 italic', style='white.TLabel')
-        #self.large_label.place(x=400, y=290)
-
         self.imagecount_slider = Scale(root, from_=100, to=2500, resolution=10, orient=HORIZONTAL, length=250, variable=self.frame_count, background='white')
         self.imagecount_slider.place(x=400, y=270)
-
-        #self.thin_label = ttk.Label(root, text = 'Fin', font='Arial 9 italic', style='white.TLabel')
-        #self.thin_label.place(x=628, y=290)
 
         self.imagesperhour_label = ttk.Label(root, text = 'Images à traiter', font='Arial 10', style='white.TLabel')
         self.imagesperhour_label.place(x=480, y=310)
 
 
         # BOTTOM
-        # Lancer le traitement (button)
-        # Annuler (button)
-        # Barre de progression (progressbar)
-        # images traitées (text)
 
         self.begin_button = ttk.Button(root, text = 'Lancer le traitement', width=20, command=self.begin)
         self.begin_button.place(x=300, y=350)
@@ -248,10 +208,9 @@ class MenuPrincipal() :
 
         # write images as files
         # TODO : fix "no such file or directory" error
-        folder_path = os.getcwd()
-        print(folder_path)
-        cv2.imwrite(folder_path+'/resources/start_frame.png', start_frame)
-        cv2.imwrite(folder_path+'/resources/end_frame.png', end_frame)
+        os.chdir(self.folder_path)
+        cv2.imwrite('resources/start_frame.png', start_frame)
+        cv2.imwrite('resources/end_frame.png', end_frame)
         # update the images
         self.leftimage_image = PhotoImage(file='resources/start_frame.png')
         self.rightimage_image = PhotoImage(file='resources/end_frame.png')
@@ -263,19 +222,19 @@ class MenuPrincipal() :
         # default values for each mode
 
         # Mode 1 : meanbands
-        # Output height = 1024
+        # Output height = 300
         # Frame count = 1500
 
         # Mode 2 : meancircles
-        # Output height = 512
-        # Frame count = 350
+        # Output height = 1000
+        # Frame count = 250
 
         # Mode 3 : clusters
-        # Output height = 1024
+        # Output height = 300
         # Frame count = 1500
 
         def1 = [300, 1500]
-        def2 = [1024, 350]
+        def2 = [1000, 250]
         def3 = [300, 1500]
 
         match self.mode.get():
