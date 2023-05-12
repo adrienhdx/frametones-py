@@ -305,22 +305,21 @@ class MenuPrincipal() :
         subject.config(state='disabled')
 
     def process_avg(self, circle=False):
-        """Si le mode "bandes" a été selectionné : initialisation de l'image et lancement du timer de création de l'image finale, pour chaque image traitée (selon le pas de traitement)
-        calcul de la moyenne de couleurs et ajout d'une bande de taille normalisée de la couleur moyenne correspondant à cette image.
-        Si le mode "cercles" a été selectionné : fixation des dimensions des cercles pour chaque image (selon le pas de traitement), initialisation timer création image finale et image, 
+        """Si le mode "bandes" a été selectionné : calcul de la moyenne de couleurs et ajout d'une bande de taille normalisée de la couleur moyenne correspondant à cette image.
+        Si le mode "cercles" a été selectionné : fixation des dimensions des cercles pour chaque image (selon le pas de traitement), 
         création d'une liste des couleurs moyennes pour l'ensemble des images traitées, insertion des cercles sur l'image (en partant de 
         la fin de la liste donc du cercle de plus grand diamètre)
 
         Parameters
         ----------
-        circle : _type = booléen_
-            _indique si le mode cercle a été choisi ou non dans le cas où on choisit la couleur par moyennes_
-            _vaut False par défaut_
+        circle : _type = bool
+            indique si le mode cercle a été choisi ou non dans le cas où on choisit la couleur par moyennes
+            vaut False par défaut
 
         Returns
         -------
-        output_image : _type = image_
-            _image par bandes / par cercles représentative de la colorimétrie du film (accès par cv2)_
+        output_image : _type = ndarray
+            image par bandes / par cercles représentative de la colorimétrie du film ( ndarray de taille (hauteur, largeur, 3) )
         """
         height = self.output_height.get()
         frame_count = self.frame_count.get()
@@ -372,7 +371,7 @@ class MenuPrincipal() :
         return output_image
 
     def process_kmeans(self):
-                """Initialisation de l'image (et de ses dimensions) et du timer de création de l'image finale, 
+        """Initialisation de l'image (et de ses dimensions) et du timer de création de l'image finale, 
         pour chaque image traitée (selon le pas de traitement) : calcul des 7 couleurs prédominantes puis insertion sur l'image d'une bande tenant compte de ce calcul 
         dans l'ordre chronologique du film
 
@@ -504,28 +503,27 @@ class MenuPrincipal() :
         self.write_info(self.usage_text, '...\n') 
 
     def log_progress(self, frame):
-            """Détermination du la progression du traitement par rapport à la longueur totale du fichier à traiter 
+        """Détermination du la progression du traitement par rapport à la longueur totale du fichier à traiter 
         et affichage de cette progression à l'aide d'un texte qui indique le temps écoulé depuis le lancement du traitement
         et de la progressbar (évolution de l'affichage dans le temps : texte et progressbar actualisés continuellement jusqu'à la fin du traitement)
 
         Parameters
         ----------
-        i : _type : int_
-            _numéro de l'image en traitement_
-        start_time : _type : time_
-            _timer de lancement du processus de création de l'image (kmeans / bandes / cercles)_
+        frame : _type : int
+            numéro de l'image en traitement
+
         """
-            # notify progress
-            self.progress.set(frame+1)
-            self.delete_all_info(self.info_text)
-            self.delete_all_info(self.usage_text)
+        # notify progress
+        self.progress.set(frame+1)
+        self.delete_all_info(self.info_text)
+        self.delete_all_info(self.usage_text)
 
-            self.write_info(self.info_text, f"Image {frame+1}/{self.frame_count.get()} traitée\n")
-            self.write_info(self.usage_text, f"RAM: {psutil.virtual_memory()[2]}%\n")
+        self.write_info(self.info_text, f"Image {frame+1}/{self.frame_count.get()} traitée\n")
+        self.write_info(self.usage_text, f"RAM: {psutil.virtual_memory()[2]}%\n")
 
-            self.progressbar.update()
-            self.info_text.update()
-            self.usage_text.update()
+        self.progressbar.update()
+        self.info_text.update()
+        self.usage_text.update()
     
     
 app = MenuPrincipal()

@@ -159,3 +159,11 @@ def palette_strip_hue(image_path, no_colors=7):
     print(f"*    Total processing time : {extraction_time+sorted_time+output_time:.02f} seconds ({1/(extraction_time+sorted_time+output_time):.02f} fps)")
 
     return output_image
+
+
+# generate X random integers so that their sum adds up to 100
+# used in fx_strip
+def generate_random_importance(nb_colors, max):
+    random_importance = np.random.randint(0, max, nb_colors)
+    random_importance = random_importance*max // random_importance.sum()
+    return random_importance

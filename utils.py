@@ -3,15 +3,6 @@ import cv2 #pip install opencv-python
 import colorsys
 import time
 
-"""
-Pour ouvrir un dossier ou un fichier dans l'explorateur de fichier :
-en gros pour charger le film depuis tkinter
-
-from tkinter import filedialog
-tk.Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-folder_path = filedialog.askdirectory()
-"""
-
 def avg_strip_HSV(img):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
@@ -25,17 +16,7 @@ def avg_strip_HSV(img):
 def avg_strip_RGB(img):
     return np.average(img, axis=(0,1))
 
-# generate X random integers so that their sum adds up to 100
-# used in fx_strip
-def generate_random_importance(nb_colors, max):
-    random_importance = np.random.randint(0, max, nb_colors)
-    random_importance = random_importance*max // random_importance.sum()
-    return random_importance
-
-
-# Function to find best K value ?
 def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
-
     if compress : 
         image = cv2.resize(image, (240, 180))
     
@@ -95,7 +76,6 @@ def process_kmeans(source, frame_count, output_height, logging=True, color_count
     output_image = output_image[4:, :, :]
 
     return output_image
-
 
 def process_avg(source, frame_count, output_height, logging=True, high_res=False, circle=False, end_credits=7200):
 
