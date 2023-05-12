@@ -5,7 +5,8 @@ Written as a programming project at INSA Lyon.
 Results from the program can be seen here : https://theslippypenguin.github.io/frametones/  
 (Associated respository : https://github.com/TheSlippyPenguin/frametones)  
 
-![](https://theslippypenguin.github.io/frametones/kmeans/Avatar-The-Way-Of-Water-(2022).jpg)
+![Avatar 2 : The Way Of Water](https://theslippypenguin.github.io/frametones/kmeans/Avatar-The-Way-Of-Water-(2022).jpg)
+Results for Avatar 2  
 
 ## Major upcoming tasks
 
