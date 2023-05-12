@@ -14,6 +14,9 @@ from PIL import Image, ImageTk #pip install pillow
 
 class MenuPrincipal() :
     def __init__(self) :
+        """Initialisation de la fenêtre racine (paramètres principaux, attributs, lancement du gestionnaore 
+        d'évènements et lancement de la création des wigets)
+        """
         # Initialisation de la fenêtre racine
         self.root = Tk()
         self.resultsWindow = None
@@ -66,6 +69,16 @@ class MenuPrincipal() :
         self.root.mainloop()
 
     def creer_widgets(self, root):
+        """Mise en place des widgets de la fenêtre : 
+        à gauche, options permettant de sélectionner un fichier video, les paramètres de traitement et le mode de traitement de la colorimétrie du fichier,
+        de préciser si la fichier source est de haute résolution et d'indiquer la qualité souhaitée (slider),  ;
+        à droite, affichage de l'image de début et de l'image de fin, bouton actualiser, slider nombre d'images par heures ;
+        en bas, bouton de lancement du traitement et barre de progression du traitement 
+        Parameters
+        ----------
+        root : _type : Tk_
+            _fenetre racine_
+        """
         # TOP
 
         self.projectname_header = ttk.Label(root, text = 'Projet algo S4', font='Arial 13 bold', style='white.TLabel')
@@ -165,6 +178,11 @@ class MenuPrincipal() :
         self.write_info(self.usage_text, '...\n') 
 
     def load_film(self):
+        """Chargement du fichier video : l'utilisateur clique sur un ficier dont on récupère le chemin, qu'on insère dans la zone d'entrée
+        (vidée au préalable). Affichage d'un message d'information indiquant que le fichier a été chargé et son chemin.
+        On récupère le fichier video avec cv2 et son nombre d'image.
+        Mise à jour de la longueur du slider de temps (adaptation à la longueur du fichier en fonction du nombre d'images)
+        """
         self.film_path = filedialog.askopenfilename(title = "Choisir un fichier", filetypes = (("Video files", "*.mp4"), ("all files", "*.*")), initialdir=os.path.expanduser('~\Videos'))
 
         if self.film_path == '':
@@ -192,6 +210,11 @@ class MenuPrincipal() :
         self.refresh_preview()
 
     def refresh_preview(self):
+        """Récupère la première et la dernière image du film et les affiche dans les cadres "1ère image" et "dernière image"
+        (les images sont récupérées et redimensionnées avec cv2 puis écrites sous forme de fichiers png,
+        elles sont ensuite mises à jour avec PhotoImage  afin d'être compatibles avec tkinter pour être collées dans les cadres de droite)
+        Si le chemin de fichier entré est vide, la fonction affiche un message d'erreur. 
+        """
         if self.film_path == '':
             self.write_info(self.info_text, 'Erreur : Aucun fichier vidéo chargé\n')
             return
@@ -219,6 +242,10 @@ class MenuPrincipal() :
         self.rightimage_label.config(image=self.rightimage_image)
         
     def set_defaults(self):
+        """Affecte des valeurs par défaut aux attributs self.frame_count et self.output_height
+         pour les différents modes de traitement (meanbands, meancircles and cluster) ;
+         met à jour les deux sliders (images par heure et qualité de résolution)
+        """
         # default values for each mode
 
         # Mode 1 : meanbands
@@ -252,16 +279,49 @@ class MenuPrincipal() :
         self.output_height_slider.update()
 
     def write_info(self, subject, text):
+        """Entrer les informations à écrire et afficher dans un objet de type Text
+
+        Parameters
+        ----------
+        subject : _type : objet de la classe Text_
+            _sert à afficher un text (sur lequel on peut effectuer des modifications) sur la fenêtre_
+        text : _type : string_
+            _chaine de caractères à insérer_
+        """
         subject.config(state='normal')
         subject.insert(INSERT, text)
         subject.config(state='disabled')
 
     def delete_all_info(self, subject):
+        """Supprimer les informations écrites dans l'objet Text (réinitialisation de l'objet)
+
+        Parameters
+        ----------
+        subject : _type : objet de la classe Text_
+            _permet d'afficher un texte modifiable sur la fenêtre graphique_
+        """
         subject.config(state='normal')
         subject.delete(1.0, END)
         subject.config(state='disabled')
 
     def process_avg(self, circle=False):
+        """Si le mode "bandes" a été selectionné : initialisation de l'image et lancement du timer de création de l'image finale, pour chaque image traitée (selon le pas de traitement)
+        calcul de la moyenne de couleurs et ajout d'une bande de taille normalisée de la couleur moyenne correspondant à cette image.
+        Si le mode "cercles" a été selectionné : fixation des dimensions des cercles pour chaque image (selon le pas de traitement), initialisation timer création image finale et image, 
+        création d'une liste des couleurs moyennes pour l'ensemble des images traitées, insertion des cercles sur l'image (en partant de 
+        la fin de la liste donc du cercle de plus grand diamètre)
+
+        Parameters
+        ----------
+        circle : _type = booléen_
+            _indique si le mode cercle a été choisi ou non dans le cas où on choisit la couleur par moyennes_
+            _vaut False par défaut_
+
+        Returns
+        -------
+        output_image : _type = image_
+            _image par bandes / par cercles représentative de la colorimétrie du film (accès par cv2)_
+        """
         height = self.output_height.get()
         frame_count = self.frame_count.get()
 
@@ -312,6 +372,15 @@ class MenuPrincipal() :
         return output_image
 
     def process_kmeans(self):
+                """Initialisation de l'image (et de ses dimensions) et du timer de création de l'image finale, 
+        pour chaque image traitée (selon le pas de traitement) : calcul des 7 couleurs prédominantes puis insertion sur l'image d'une bande tenant compte de ce calcul 
+        dans l'ordre chronologique du film
+
+        Returns
+        -------
+        output_image : _type : image_
+            _image représentative de la colorimétrie chronologique du film obtenue par un processus de clustering (accès avec cv2)_
+        """
         height = self.output_height.get()
         frame_count = self.frame_count.get()
         output_image = np.zeros((height+4, frame_count, 3), np.uint8)
@@ -329,6 +398,10 @@ class MenuPrincipal() :
         return output_image
     
     def begin(self):
+        """Choix d'un dossier de destination pour l'image par l'utilisateur. 
+        Si aucun fichier n'est chargé ou aucun dossier de destination n'est sélectionné, un message d'erreur est affiché.
+        Lancement du traitement du film et de la fenêtre d'informations à remplir par l'utilisateur
+        """
         if self.film_path == "":
             self.write_info(self.info_text, "Erreur : Aucun fichier vidéo chargé\n")
             return
@@ -343,10 +416,20 @@ class MenuPrincipal() :
         self.open_info_window()
 
     def open_info_window(self):
+        """Instanciation d'un objet fenêtre de la  classe InfoWindow, lancée pour récupérer les informations du film.
+        """
         self.infoWindow = InfoWindow(self.root, self.out_path)
         
     def process_film(self):
-        
+        """Calcul du pas de traitement des images. Lancement d'un timer de traitement. Lancement de l'analyse colorimétrique et
+        de la production d'une image représentative de la colorimétrie du fichier vidéo en fonction du mode choisi.
+        L'image produite est récupérée et stockée dans le dossier choisi au départ par l'utilisateur.
+        ((Le répertoire d'études est redirigé à l'endroit où l'on stocke les images))
+        Affichage de messages d'information (image chargée, temps de traitement)
+        Affichage de l'image résultat.
+        Au cours du traitement, l'utilisation des différents widgets est blockée afin d'éviter toute erreur, elle est à nouveau disponible à la fin du traitement.
+        On réinitialise les variables utiles afin de pouvoir lancer un nouveau traitement
+        """
         self.disable_all()
 
         os.chdir(self.out_path)
@@ -382,6 +465,8 @@ class MenuPrincipal() :
         self.reset_vars()     
 
     def disable_all(self):
+        """Désactivation des fonctionnalités des widgets : l'utilisateur ne peut plus les activer
+        """
         # disable everything while processing
         self.begin_button.config(state='disabled')
         self.selectfile_button.config(state='disabled')
@@ -394,6 +479,8 @@ class MenuPrincipal() :
         self.imagecount_slider.config(state='disabled')
 
     def enable_all(self):
+        """Activation des fonctionnalités des widgets cités ci-dessous
+        """
         # enable everything after processing
         self.begin_button.config(state='normal')
         self.selectfile_button.config(state='normal')
@@ -406,6 +493,9 @@ class MenuPrincipal() :
         self.imagecount_slider.config(state='normal')
 
     def reset_vars(self):
+        """ Réinitialisation de la variable de progression de chargement et redéfinition du répertoire d'études 
+        à l'endroit où l'image a été stockée 
+        """
         # reset variables
         # dunno what to add there
         self.progress.set(0)
@@ -414,6 +504,17 @@ class MenuPrincipal() :
         self.write_info(self.usage_text, '...\n') 
 
     def log_progress(self, frame):
+            """Détermination du la progression du traitement par rapport à la longueur totale du fichier à traiter 
+        et affichage de cette progression à l'aide d'un texte qui indique le temps écoulé depuis le lancement du traitement
+        et de la progressbar (évolution de l'affichage dans le temps : texte et progressbar actualisés continuellement jusqu'à la fin du traitement)
+
+        Parameters
+        ----------
+        i : _type : int_
+            _numéro de l'image en traitement_
+        start_time : _type : time_
+            _timer de lancement du processus de création de l'image (kmeans / bandes / cercles)_
+        """
             # notify progress
             self.progress.set(frame+1)
             self.delete_all_info(self.info_text)
