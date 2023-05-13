@@ -12,6 +12,14 @@ import numpy as np
 import psutil #pip install psutil
 from PIL import Image, ImageTk #pip install pillow
 
+#Description document : 
+#Ce document comporte la classe définissant la fenêtre racine (menu principal) ainsi que toutes les options associées
+#(activation des fonctions via l'interaction de l'utilisateur avec les widgets du menu principal)
+#Les fonctions codées correspondent au code principal (main) du traitement du film, des options liées aux widgets
+#et du lancement des fenêtres secondaires (dont les classes sont définies dans un document à part). 
+#Certaines fonctions appelées lors du traitement technique sont définies à part, dans le document "utils"
+
+
 class MenuPrincipal() :
     def __init__(self) :
         """Initialisation de la fenêtre racine (paramètres principaux, attributs, lancement du gestionnaore 
@@ -360,7 +368,7 @@ class MenuPrincipal() :
 
                 frame = cv2.resize(frame, (240, 180))
 
-                colors.append(utils.avg_strip_RGB(frame))  #average_frame_color_HSV(frame)
+                colors.append(utils.avg_strip_RGB(frame))  #average_strip_HSV(frame)
             
                 self.log_progress(i)
 
