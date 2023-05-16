@@ -11,8 +11,4 @@ Results for Avatar 2
 ## Major upcoming tasks
 
 - readme.txt (TODO Youssef)
-- PDF explicatif (TODO Adrien)
-- docstrings (TODO Albane)
 - vidéo de démo (TODO Axelle)
-- code cleanup (TODO Adrien)
-
