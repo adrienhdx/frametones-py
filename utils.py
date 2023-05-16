@@ -3,7 +3,26 @@ import cv2 #pip install opencv-python
 import colorsys
 import time
 
+#Description du document : 
+#Code des fonctions (appelées dans le main) qui réalisent effectivement l'analyse colorimétrique du film
+# et la création de l'image finale  
+
 def avg_strip_HSV(img):
+    """Récupère la teinte de couleur moyenne de l'image (accès par cv2) dans le système de couleur hsv 
+    (en récupérant d'abord séparément la teinte moyenne en h, en s et en v) puis convertit l'identité 
+    de la couleur dans le système RGB (avec la fonction cvtColor)
+
+    Parameters
+    ----------
+    img : _type : image_
+        _une image du film en traitement_
+
+    Returns
+    -------
+    _avg_color_rgb_[0][0] : _type = float_
+        _identifiant de la couleur dans le système RGB (première valeur de la matrice 
+        _avg_color_rgb_)_
+    """
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
     avg_h = np.average(h)
@@ -14,9 +33,42 @@ def avg_strip_HSV(img):
     return _avg_color_rgb[0][0]
 
 def avg_strip_RGB(img):
+    """Retourne directement la valeur dans le système RGB de la couleur moyenne de l'image traitée
+
+    Parameters
+    ----------
+    img : _type : image_
+        _une image du film en traitement_
+
+    Returns
+    -------
+    np.average(img, axis=(0,1)) : _type = float_
+        _identifiant de la couleur moyenne de l'image (calulé par la fonction average)_
+    """
     return np.average(img, axis=(0,1))
 
 def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
+    """Définiton du critère de clustering, calcul des couleurs prédominantes, création de la bande
+    correspondant à la colorimétrie de l'image et ajout de la bande à l'image finale en cours de création.
+
+    Parameters
+    ----------
+    image : _type : image_
+        _une image en traitement dans le film_
+    color_count : int, optional
+        _nombre de couleurs prédominantes souhaitées pour le calcul par clusters_, by default 7
+    strip_height : int, optional
+        _hauteur de la bande de l'image crée_, by default 100
+    compress : bool, optional
+        _permet éventuellement de redimensionner l'image_, by default False
+
+    Returns
+    -------
+    output_image : _type : image_
+        _image finale constituée de bandes verticales de taille normalisée et représentative de la 
+        colorimétrie du film jusqu'à l'image traitée ici (par étalement sur une bande des n couleurs prédominantes (7 par défaut) 
+        pour chaque image traitée)_
+    """
     if compress : 
         image = cv2.resize(image, (240, 180))
     
@@ -55,7 +107,8 @@ def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
     
     return output_image
 
-# duplicate of function in mainmenu.py, used in archive files
+#ancienne version des fonctions déjà présentes dans le main 
+
 def process_kmeans(source, frame_count, output_height, logging=True, color_count=7, high_res=False, end_credits=7200):
 
     source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits

@@ -7,6 +7,9 @@ import os
 import json
 from PIL import Image, ImageTk
 
+#Description du document : 
+#Definition des classes InfoWindow et Resultswindow (fenêtres secondaires), appelées dans le main
+#lorsqu'on souhaite respectivement récupérer les informations du film ou afficher le résultat du traitement
 
 class InfoWindow() :
     def __init__(self, master, out_path) :

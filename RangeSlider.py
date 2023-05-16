@@ -1,6 +1,9 @@
 from tkinter import *
 from tkinter.ttk import *
 
+#Description du document :
+# Classe RangeSliderH de python, employée dans le main pour créer un slider de temps
+
 class RangeSliderH(Frame):
     LINE_COLOR = "#476b6b"
     LINE_S_COLOR="#0a50ff"
