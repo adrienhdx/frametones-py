@@ -514,5 +514,6 @@ class MenuPrincipal() :
         self.info_text.update()
         self.usage_text.update()
     
-    
+
 app = MenuPrincipal()
+app.root.mainloop()
