@@ -7,8 +7,3 @@ Results from the program can be seen here : https://theslippypenguin.github.io/f
 
 ![Avatar 2 : The Way Of Water](https://theslippypenguin.github.io/frametones/kmeans/Avatar-The-Way-Of-Water-(2022).jpg)
 Results for Avatar 2  
-
-## Major upcoming tasks
-
-- readme.txt (TODO Youssef)
-- vidéo de démo (TODO Axelle)
