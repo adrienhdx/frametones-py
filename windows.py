@@ -5,7 +5,6 @@ from tkinter import ttk
 from tkinter import filedialog
 import os
 import json
-from PIL import Image, ImageTk
 
 #Description du document : 
 #Definition des classes InfoWindow et Resultswindow (fenêtres secondaires), appelées dans le main

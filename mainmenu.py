@@ -3,14 +3,13 @@ import cv2 #pip install opencv-python
 import os
 import utils
 import time
-from windows import InfoWindow, ResultsWindow
+from windows import InfoWindow
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from RangeSlider import RangeSliderH
 import numpy as np
 import psutil #pip install psutil
-from PIL import Image, ImageTk #pip install pillow
 
 #Description document : 
 #Ce document comporte la classe définissant la fenêtre racine (menu principal) ainsi que toutes les options associées
@@ -238,7 +237,6 @@ class MenuPrincipal() :
         end_frame = cv2.resize(end_frame, (120, 60))
 
         # write images as files
-        # TODO : fix "no such file or directory" error
         os.chdir(self.folder_path)
         cv2.imwrite('resources/start_frame.png', start_frame)
         cv2.imwrite('resources/end_frame.png', end_frame)
@@ -255,18 +253,6 @@ class MenuPrincipal() :
          met à jour les deux sliders (images par heure et qualité de résolution)
         """
         # default values for each mode
-
-        # Mode 1 : meanbands
-        # Output height = 300
-        # Frame count = 1500
-
-        # Mode 2 : meancircles
-        # Output height = 1000
-        # Frame count = 250
-
-        # Mode 3 : clusters
-        # Output height = 300
-        # Frame count = 1500
 
         def1 = [300, 1500]
         def2 = [1000, 250]
@@ -291,10 +277,10 @@ class MenuPrincipal() :
 
         Parameters
         ----------
-        subject : _type : objet de la classe Text_
-            _sert à afficher un text (sur lequel on peut effectuer des modifications) sur la fenêtre_
-        text : _type : string_
-            _chaine de caractères à insérer_
+        subject : _type : objet de la classe Text
+            sert à afficher un text (sur lequel on peut effectuer des modifications) sur la fenêtre
+        text : _type : string
+            chaine de caractères à insérer
         """
         subject.config(state='normal')
         subject.insert(INSERT, text)
@@ -302,6 +288,7 @@ class MenuPrincipal() :
 
     def delete_all_info(self, subject):
         """Supprimer les informations écrites dans l'objet Text (réinitialisation de l'objet)
+        Pas de vérification de la classe de l'objet car la fonction est appelée uniquement sur des objets de type Text
 
         Parameters
         ----------
@@ -348,7 +335,7 @@ class MenuPrincipal() :
                 self.log_progress(i)
         else:
             
-            # fix aspect ratio to sqrt(2)
+            # fix aspect ratio to sqrt(2) 
             aspect = 2**0.5    
 
             output_width = int(height / aspect)   
@@ -379,14 +366,14 @@ class MenuPrincipal() :
         return output_image
 
     def process_kmeans(self):
-        """Initialisation de l'image (et de ses dimensions) et du timer de création de l'image finale, 
-        pour chaque image traitée (selon le pas de traitement) : calcul des 7 couleurs prédominantes puis insertion sur l'image d'une bande tenant compte de ce calcul 
-        dans l'ordre chronologique du film
+        """
+        Crée une image représentative de la colorimétrie chronologique du film obtenue par un processus de clustering
 
         Returns
         -------
-        output_image : _type : image_
-            _image représentative de la colorimétrie chronologique du film obtenue par un processus de clustering (accès avec cv2)_
+        output_image : _type : ndarray
+            image représentative de la colorimétrie chronologique du film obtenue par un processus de clustering (accès avec cv2)
+            (ndarray de taille (hauteur, largeur, 3)
         """
         height = self.output_height.get()
         frame_count = self.frame_count.get()
@@ -423,19 +410,14 @@ class MenuPrincipal() :
         self.open_info_window()
 
     def open_info_window(self):
-        """Instanciation d'un objet fenêtre de la  classe InfoWindow, lancée pour récupérer les informations du film.
+        """Instanciation d'un objet fenêtre de la classe InfoWindow, lancée pour récupérer les informations du film.
         """
         self.infoWindow = InfoWindow(self.root, self.out_path)
         
     def process_film(self):
-        """Calcul du pas de traitement des images. Lancement d'un timer de traitement. Lancement de l'analyse colorimétrique et
-        de la production d'une image représentative de la colorimétrie du fichier vidéo en fonction du mode choisi.
-        L'image produite est récupérée et stockée dans le dossier choisi au départ par l'utilisateur.
-        ((Le répertoire d'études est redirigé à l'endroit où l'on stocke les images))
-        Affichage de messages d'information (image chargée, temps de traitement)
-        Affichage de l'image résultat.
-        Au cours du traitement, l'utilisation des différents widgets est blockée afin d'éviter toute erreur, elle est à nouveau disponible à la fin du traitement.
-        On réinitialise les variables utiles afin de pouvoir lancer un nouveau traitement
+        """
+        Traitement du film selon le mode choisi par l'utilisateur (bandes, cercles ou KMeans)
+        et selon les informations récupérées par la fenêtre d'informations.
         """
         self.disable_all()
 
@@ -472,7 +454,7 @@ class MenuPrincipal() :
         self.reset_vars()     
 
     def disable_all(self):
-        """Désactivation des fonctionnalités des widgets : l'utilisateur ne peut plus les activer
+        """Désactivation des fonctionnalités des widgets : l'utilisateur ne peut plus les utiliser
         """
         # disable everything while processing
         self.begin_button.config(state='disabled')
@@ -500,8 +482,7 @@ class MenuPrincipal() :
         self.imagecount_slider.config(state='normal')
 
     def reset_vars(self):
-        """ Réinitialisation de la variable de progression de chargement et redéfinition du répertoire d'études 
-        à l'endroit où l'image a été stockée 
+        """ Réinitialisation des variables d'affichage
         """
         # reset variables
         # dunno what to add there

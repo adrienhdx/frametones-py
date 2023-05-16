@@ -4,7 +4,7 @@ import colorsys
 import time
 
 #Description du document : 
-#Code des fonctions (appelées dans le main) qui réalisent effectivement l'analyse colorimétrique du film
+#Code des fonctions (appelées dans le main) qui réalisent l'analyse colorimétrique du film
 # et la création de l'image finale  
 
 def avg_strip_HSV(img):
@@ -14,14 +14,14 @@ def avg_strip_HSV(img):
 
     Parameters
     ----------
-    img : _type : image_
-        _une image du film en traitement_
+    img : _type : ndarray
+        une image du film en traitement
 
     Returns
     -------
-    _avg_color_rgb_[0][0] : _type = float_
-        _identifiant de la couleur dans le système RGB (première valeur de la matrice 
-        _avg_color_rgb_)_
+    _avg_color_rgb_[0][0] : _type = (int, int, int)
+
+        
     """
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
@@ -37,13 +37,13 @@ def avg_strip_RGB(img):
 
     Parameters
     ----------
-    img : _type : image_
-        _une image du film en traitement_
+    img : _type : ndarray
+        une image du film en traitement
 
     Returns
     -------
-    np.average(img, axis=(0,1)) : _type = float_
-        _identifiant de la couleur moyenne de l'image (calulé par la fonction average)_
+    np.average(img, axis=(0,1)) : _type = (int, int, int)
+        la couleur moyenne de l'image
     """
     return np.average(img, axis=(0,1))
 
@@ -53,21 +53,19 @@ def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
 
     Parameters
     ----------
-    image : _type : image_
-        _une image en traitement dans le film_
+    image : _type : ndarray
+        une image en traitement dans le film
     color_count : int, optional
-        _nombre de couleurs prédominantes souhaitées pour le calcul par clusters_, by default 7
+        nombre de couleurs prédominantes souhaitées pour le calcul par clusters, par défaut 7
     strip_height : int, optional
-        _hauteur de la bande de l'image crée_, by default 100
+        hauteur de la bande de l'image crée, par défaut 100
     compress : bool, optional
-        _permet éventuellement de redimensionner l'image_, by default False
+        permet éventuellement de redimensionner l'image, par défaut False
 
     Returns
     -------
-    output_image : _type : image_
-        _image finale constituée de bandes verticales de taille normalisée et représentative de la 
-        colorimétrie du film jusqu'à l'image traitée ici (par étalement sur une bande des n couleurs prédominantes (7 par défaut) 
-        pour chaque image traitée)_
+    output_image : _type : ndarray (strip_height x 1 x 3)
+        bande verticale
     """
     if compress : 
         image = cv2.resize(image, (240, 180))
@@ -107,10 +105,18 @@ def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
     
     return output_image
 
-#ancienne version des fonctions déjà présentes dans le main 
+# duplicate of mainmenu.py, used in archive files
 
 def process_kmeans(source, frame_count, output_height, logging=True, color_count=7, high_res=False, end_credits=7200):
+    """
+        Crée une image représentative de la colorimétrie chronologique du film obtenue par un processus de clustering
 
+        Returns
+        -------
+        output_image : _type : ndarray
+            image représentative de la colorimétrie chronologique du film obtenue par un processus de clustering (accès avec cv2)
+            (ndarray de taille (hauteur, largeur, 3)
+    """
     source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits
     frame_step = source_frame_count // frame_count
     
@@ -131,6 +137,23 @@ def process_kmeans(source, frame_count, output_height, logging=True, color_count
     return output_image
 
 def process_avg(source, frame_count, output_height, logging=True, high_res=False, circle=False, end_credits=7200):
+
+    """
+    Crée une image représentative de la colorimétrie chronologique du film obtenue par un processus de moyenne
+    
+    Args:
+        source (cv2.VideoCapture): source du film
+        frame_count (int): nombre de frames à traiter
+        output_height (int): hauteur de l'image de sortie
+        logging (bool, optional): utilisé pour le debug. Defaults to True.
+        high_res (bool, optional): compression de l'image pour améliorer les performances. Defaults to False.
+        circle (bool, optional): image de sortie sous forme de cercles. Defaults to False.
+        end_credits (int, optional): suppression des crédits (en images, à raison de 24/s). Defaults to 7200.
+
+    Returns:
+        _type_: ndarray (output_height x frame_count x 3)
+            Image finale
+    """
 
     source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits # remove end credits
     frame_step = source_frame_count // frame_count
