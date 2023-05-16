@@ -23,7 +23,6 @@ def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
     Z = image.reshape((-1,3))
     # convert to np.float32
     Z = np.float32(Z)
-    #Z = color.rgb2lab(Z)
     # define criteria, number of clusters(K) and apply kmeans()
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
     K = color_count
@@ -56,6 +55,7 @@ def kmeans_strip(image, color_count=7, strip_height=100, compress=False):
     
     return output_image
 
+# duplicate of function in mainmenu.py, used in archive files
 def process_kmeans(source, frame_count, output_height, logging=True, color_count=7, high_res=False, end_credits=7200):
 
     source_frame_count = int(source.get(cv2.CAP_PROP_FRAME_COUNT)) - end_credits
